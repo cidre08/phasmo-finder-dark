@@ -72,7 +72,7 @@
     }
     .btn-primary:hover { background: var(--accent-hover); }
 
-    /* 「？」ボタン用の微調整クラス */
+    /* 「？」ボタン用クラス */
     .btn-help-icon {
       font-weight: 700;
       font-size: 0.9rem;
@@ -96,14 +96,6 @@
     }
     .search-box:focus { outline: none; border-color: var(--accent-color); }
 
-    .filter-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
     .filter-group-title {
       font-size: 0.75rem;
       color: var(--text-sub);
@@ -208,7 +200,6 @@
       font-size: 0.7rem;
       color: var(--text-sub);
     }
-    /* リセットボタン（？ボタンと統一感のある形状・配色） */
     .btn-reset-inline {
       font-size: 0.75rem;
       padding: 5px 12px;
@@ -381,6 +372,22 @@
     <input type="text" id="search-input" class="search-box" placeholder="ゴースト名・特殊能力・特徴でフリーワード検索..." oninput="handleSearch(this.value)">
   </div>
 
+  <!-- 難易度設定（ヘッダー右横に現在の設定がリアルタイム表示されます） -->
+  <div class="tools-container">
+    <div class="tools-header" onclick="toggleDifficulty()">
+      <div>
+        <span>難易度・証拠数モード設定</span>
+        <span id="current-difficulty-indicator" style="color: var(--accent-color); font-weight: normal; margin-left: 8px;"></span>
+      </div>
+      <span id="difficulty-arrow">▼</span>
+    </div>
+    <div class="tools-body" id="difficulty-content">
+      <div class="filter-group-title">難易度・証拠数モード</div>
+      <div class="filter-buttons" id="mode-buttons"></div>
+    </div>
+  </div>
+
+  <!-- スマッジタイマー・足音測定 -->
   <div class="tools-container">
     <div class="tools-header" onclick="toggleTools()">
       <span>スマッジタイマー・足音測定</span>
@@ -409,10 +416,8 @@
     </div>
   </div>
 
-  <div class="filter-section">
-    <div class="filter-group-title">難易度・証拠数モード</div>
-    <div class="filter-buttons" id="mode-buttons"></div>
-
+  <!-- 証拠条件やその他のフィルターは常に常時表示 -->
+  <div style="margin-bottom: 14px;">
     <div class="filter-group-title">証拠アイテム（クリックで絞り込み / 除外）</div>
     <div class="filter-buttons" id="evidence-buttons"></div>
 
@@ -855,6 +860,13 @@
       arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
     }
 
+    function toggleDifficulty() {
+      const content = document.getElementById('difficulty-content');
+      const arrow = document.getElementById('difficulty-arrow');
+      content.classList.toggle('open');
+      arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
+    }
+
     let smudgeTimerInterval = null, smudgeSeconds = 0, isSmudgeRunning = false;
 
     function handleSmudgeTimer() {
@@ -966,6 +978,9 @@
     function initControls() {
       const modeContainer = document.getElementById('mode-buttons');
       modeContainer.innerHTML = '';
+      
+      let currentLabelText = '';
+
       [3, 2, 1, 0].forEach(num => {
         const btn = document.createElement('button');
         btn.type = 'button';
@@ -977,10 +992,20 @@
         else if (num === 1) label = 'インサニティ (1個)';
         else if (num === 0) label = '証拠ゼロ (0個)';
         
+        if (currentEvidenceMode === num) {
+          currentLabelText = `(${label})`;
+        }
+
         btn.textContent = label;
         btn.onclick = () => { currentEvidenceMode = num; initControls(); filterAndRender(); };
         modeContainer.appendChild(btn);
       });
+
+      // ヘッダーの右横に現在の難易度を反映
+      const indicator = document.getElementById('current-difficulty-indicator');
+      if (indicator) {
+        indicator.textContent = currentLabelText;
+      }
 
       createFilterButtons('evidence-buttons', allEvidences, selectedEvidences, eliminatedEvidences, 'active-evidence');
       createFilterButtons('hunt-buttons', allHunts, selectedHunts, eliminatedHunts, 'active-hunt');
