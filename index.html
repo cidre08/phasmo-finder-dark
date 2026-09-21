@@ -265,7 +265,7 @@
     }
     .help-panel.open { right: 0; }
     .help-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .help-content { font-size: 0.8rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 10px; }
+    .help-content { font-size: 0.8rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 8px; }
 
     .jump-links {
       display: flex;
@@ -284,17 +284,38 @@
       font-weight: 600;
     }
     .jump-btn:hover { background: #423a34; color: #fff; }
-    .help-content h3 { font-size: 0.85rem; color: var(--text-main); margin-top: 6px; }
-    .help-content ul { padding-left: 16px; font-size: 0.75rem; margin-bottom: 4px; }
-    .help-content li { margin-bottom: 4px; }
-    .map-spot-box {
+
+    /* アコーディオン用スタイル */
+    .help-content details {
       background: var(--bg-color);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 8px 10px;
-      margin-bottom: 8px;
     }
-    .map-title { font-size: 0.75rem; font-weight: 600; color: var(--warning-color); margin-bottom: 4px; }
+    .help-content summary {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--warning-color);
+      cursor: pointer;
+      outline: none;
+    }
+    .help-content summary:hover { color: var(--text-main); }
+    .help-content details[open] summary {
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 4px;
+    }
+    .help-content ul { padding-left: 16px; font-size: 0.75rem; margin-top: 4px; }
+    .help-content li { margin-bottom: 4px; }
+
+    .map-spot-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 6px 8px;
+      margin-top: 6px;
+    }
+    .map-title { font-size: 0.75rem; font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
 
     .candidate-list {
       display: flex;
@@ -319,7 +340,7 @@
     <h1>Phasmophobia 調査ツール (完全版)</h1>
     <div class="header-btns">
       <button type="button" onclick="resetAllFilters()">リセット</button>
-      <button type="button" class="btn-primary" onclick="toggleHelp()">攻略データ・早見表</button>
+      <button type="button" class="btn-primary" onclick="toggleHelp()">攻略データ・解説</button>
     </div>
   </header>
 
@@ -384,82 +405,75 @@
 
   <div class="help-panel" id="help-panel">
     <div class="help-header">
-      <h2 style="font-size: 0.95rem; color: var(--text-main); margin: 0;">攻略データ ＆ SAN値早見表</h2>
+      <h2 style="font-size: 0.95rem; color: var(--text-main); margin: 0;">攻略データ ＆ 解説パネル</h2>
       <button type="button" onclick="toggleHelp()">閉じる</button>
     </div>
     
     <div class="help-content">
       <div class="jump-links">
-        <a href="#nightmare-section" class="jump-btn">確定証拠</a>
-        <a href="#accel-section" class="jump-btn">視認加速仕様</a>
-        <a href="#track-section" class="jump-btn">追跡系</a>
-        <a href="#san-table-section" class="jump-btn">SAN値早見表</a>
-        <a href="#maps-section" class="jump-btn">呪いスポット</a>
+        <a href="#usage-section" class="jump-btn" onclick="openDetails('usage-section')">使い方</a>
+        <a href="#bloodmoon-section" class="jump-btn" onclick="openDetails('bloodmoon-section')">ブラッドムーン</a>
+        <a href="#maps-section" class="jump-btn" onclick="openDetails('maps-section')">呪いスポット</a>
       </div>
 
-      <div id="nightmare-section">
-        <h3>ナイトメア以降証拠を隠さないゴースト（確定証拠）</h3>
+      <!-- 使い方アコーディオン (初期オープンに変更) -->
+      <details id="usage-section" open>
+        <summary>ツール・使い方ガイド</summary>
         <ul>
-          <li><strong>スピリットボックス:</strong> デオヘン、モーロイ</li>
-          <li><strong>氷点下の温度:</strong> ハントゥ</li>
-          <li><strong>紫外線:</strong> 化け狐</li>
-          <li><strong>D.O.T.S.プロジェクター:</strong> 御霊</li>
-          <li><strong>ゴーストオーブ:</strong> ミミック（※特性として常時出現）</li>
+          <li><strong>証拠フィルター:</strong> 判明した証拠をクリックして緑（一致）に、否定された証拠を赤（除外）にします。</li>
+          <li><strong>モード切替:</strong> ナイトメアや証拠ゼロなどの難易度に合わせて証拠数を切り替えられます。</li>
+          <li><strong>タイマー＆足音測定:</strong> 浄化香のハント抑制時間や、ゴーストの足音速度から特定を行えます。</li>
+          <li><strong>カード操作:</strong> ゴースト名をタップすると候補からグレーアウト（除外）できます。</li>
         </ul>
-      </div>
+      </details>
 
-      <div id="accel-section">
-        <h3>視認加速をしない / 特殊な加速をするゴースト</h3>
-        <ul>
-          <li><strong>完全に視認加速をしない:</strong> セーイ、ハントゥ、デオヘン、ディルデガスト</li>
-          <li><strong>固有の加速仕様:</strong> レブナント（視認加速はしないが、プレイヤー感知時に即座に3.0m/sへ急加速）</li>
-          <li><strong>条件付きで加速・特殊変化:</strong> 特徴発動中の雷獣、特徴発動中のジン、特徴発動中のダヤン、特徴未発動のコルモス</li>
-        </ul>
-      </div>
+      <!-- ブラッドムーンアコーディオン (通常クローズ) -->
+      <details id="bloodmoon-section">
+        <summary>ブラッドムーン（イベント詳細情報）</summary>
+        <div style="font-size: 0.75rem; display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
+          <p>血染めの赤い月が昇る特殊な環境・気候イベント。通常の調査よりも難易度が大きく跳ね上がるハードコアな仕様が特徴です。</p>
+          <div>
+            <strong style="color: var(--text-main);">1. ゲームプレイへの影響</strong>
+            <ul>
+              <li><strong>ハント速度上昇:</strong> ゴーストの移動速度が通常より15%アップし、目が白く光る専用の見た目になります。</li>
+              <li><strong>正気度の減少加速:</strong> 正気度が急速に削られるため、早い段階からハントのリスクに晒されます。</li>
+              <li><strong>超常現象と視認性:</strong> 発生頻度が上がり、赤みがかった照明で明暗の判別がつきにくくなります。</li>
+            </ul>
+          </div>
+          <div>
+            <strong style="color: var(--text-main);">2. ムーントーテム & 報酬</strong>
+            <ul>
+              <li><strong>トーテム撮影:</strong> 対象マップに出現する不気味な「ムーントーテム」をフォトカメラで撮影してポイント獲得。</li>
+              <li><strong>永続解放:</strong> コミュニティ全体の目標達成により、カスタム難易度等で天候「ブラッドムーン」が永続解放されます。</li>
+            </ul>
+          </div>
+        </div>
+      </details>
 
-      <div id="track-section">
-        <h3>追跡系ゴースト（プレイヤーの元へ移動・ワープ）</h3>
-        <ul>
-          <li><strong>バンシー:</strong> ターゲットと同じ階にいる場合、一定確率で元へ徘徊（一部ルームを除き階をまたがない）</li>
-          <li><strong>ファントム:</strong> ランダムにプレイヤーの元へ直接ワープ（移動中はハントしない）</li>
-          <li><strong>レイス:</strong> ハント以外でプレイヤーの元へ直接ワープ（EMF2の反応が発生）</li>
-        </ul>
-      </div>
-
-      <div id="san-table-section">
-        <h3>ハント開始SAN値（正気度）早見表</h3>
-        <ul>
-          <li><strong>100%〜:</strong> 特殊ハントのデーモン、特殊ハントの怨霊</li>
-          <li><strong>80%〜:</strong> 声に反応した妖怪</li>
-          <li><strong>74%〜:</strong> 一番若いセーイ</li>
-          <li><strong>70%〜:</strong> 通常のデーモン、同室で走る足音を感知したコルモス</li>
-          <li><strong>65%〜:</strong> 電気機器が近くにある場合の雷獣、周辺で人が動いている時のダヤン、攻撃的な状態のオバンボ</li>
-          <li><strong>60%〜:</strong> 照明がオフ時のメアー、近くに火がない時の怨霊、激昂中のガルル</li>
-          <li><strong>50%〜:</strong> 鬼、御霊、ジン、スピリット、ツインズ、化け狐、バンシー、ハントゥ、ファントム、ポルターガイスト、マイリング、モーロイ、通常の雷獣、レイス、レヴナント、幽霊、通常の妖怪、周辺に誰もいないダヤン、通常のガルル、アスワング、通常のコルモス、ディルデガスト</li>
-          <li><strong>45%〜:</strong> 周辺で人が立ち止まっている時のダヤン</li>
-          <li><strong>40%〜:</strong> デオヘン、照明がオン時のメアー、近くに火がある時の怨霊、疲弊中のガルル</li>
-          <li><strong>35%〜:</strong> シェード</li>
-          <li><strong>14%〜:</strong> 10回以上老いたセーイ</li>
-          <li><strong>10%〜:</strong> 穏やかな状態のオバンボ</li>
-          <li><strong>その他:</strong> 真似をしたゴースト依存（ミミック）、老化依存（セーイ）</li>
-        </ul>
-      </div>
-
-      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;" id="maps-section">
-      <h3>全マップ別：呪いアイテムの定番スポット</h3>
-      <div class="map-spot-box">
-        <div class="map-title">小型住宅 (Tanglewood / Edgefield / Ridgeview / Willow)</div>
-        <ul><li>リビング、玄関ホール、ガレージ、子供部屋、地下室の各主要テーブル・棚等。</li></ul>
-      </div>
-      <div class="map-spot-box">
-        <div class="map-title">農家・キャンプ / プリズン・高校 / ポイント・ホープ</div>
-        <ul>
-          <li><strong>農家・キャンプ:</strong> メインテーブル、屋根裏、テント内。</li>
-          <li><strong>プリズン・高校:</strong> すべて1階エントランス（ロビー周辺）に密集。</li>
-          <li><strong>ポイント・ホープ:</strong> 各階の専用ルーム（1階〜8階）に点在。</li>
-        </ul>
-      </div>
-
+      <!-- 呪いスポットアコーディオン -->
+      <details id="maps-section">
+        <summary>全マップ別：呪いアイテムの定番スポット</summary>
+        <div class="map-spot-box">
+          <div class="map-title">小型住宅 (Tanglewood / Edgefield / Ridgeview / Willow)</div>
+          <ul><li>リビングのテーブル、玄関ホール、ガレージの棚、子供部屋、地下室の作業台など。</li></ul>
+        </div>
+        <div class="map-spot-box">
+          <div class="map-title">農家 (Bleasdale / Grafton)</div>
+          <ul><li>1階メインテーブル、キッチンカウンター、2階の屋根裏部屋など。</li></ul>
+        </div>
+        <div class="map-spot-box">
+          <div class="map-title">キャンプ (Maple Lodge / Camp Woodwind)</div>
+          <ul><li>管理棟のカウンター、テント内、ピクニックエリアのテーブルなど。</li></ul>
+        </div>
+        <div class="map-spot-box">
+          <div class="map-title">プリズン / 高校 / サニーメード</div>
+          <ul><li><strong>プリズン・高校:</strong> すべて1階エントランス（ロビー周辺）のベンチや受付に密集。</li><li><strong>サニーメード:</strong> エントランスホールおよび中庭周辺。</li></ul>
+        </div>
+        <div class="map-spot-box">
+          <div class="map-title">ポイント・ホープ (Point Hope)</div>
+          <ul><li>各階（1階〜8階）の部屋ごとの専用テーブル・棚・床面に1つずつ点在。</li></ul>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -483,7 +497,7 @@
         speedRange: [1.7, 2.7],
         special: "なし",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/sで移動し、最大2.7m/sまで視認加速。<br>②ハント中に実体化している時間が長く、消えている時間が0.1秒ほど。<br>③霧の姿の超常現象（くそデカ溜息）をしない。"
+        check: "①通常速度1.7m/sで移動し、最大2.7m/sまで視認加速。<br>②ハント中に実体化している時間が長く、消えている時間が0.1秒ほど。<br>③霧の姿の超常現象（くそデカ溜息）をしない。<br>④【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "オバンボ",
@@ -493,7 +507,7 @@
         speedRange: [1.44, 1.95],
         special: "なし",
         traits: [],
-        check: "①初期は穏やか。外側扉開錠1分後、以降2分ごとに攻撃的と切り替わる。<br>②ハント中の速度：穏やか時は1.44m/sと遅く、攻撃的時は1.95m/sと速い。<br>③穏やかな状態のほうが干渉・超常現象を多めに行う。"
+        check: "①初期は穏やか。外側扉開錠1分後、以降2分ごとに攻撃的と切り替わる。<br>②ハント中の速度：穏やか時は1.44m/sと遅く、攻撃的時は1.95m/sと速い。<br>③穏やかな状態のほうが干渉・超常現象を多めに行う。<br>④【SAN値条件】穏やかな状態は正気度10%以下、攻撃的な状態は正気度65%以下でハント開始。"
       },
       {
         name: "怨霊",
@@ -504,7 +518,7 @@
         speedRange: [1.7, 2.7],
         special: "火を3回吹き消すごとに正気度を無視してハントを起こす（ライターも含む）",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】周囲4m以内に火（ロウソクやライター）がある場合、十字架の代わりに火が消えてハントを防ぐ（クールタイムなし）。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②周囲4m以内に火（ロウソクやライター）がある場合、十字架の代わりに火が消えてハントを防ぐ。<br>③【SAN値条件】近くに火がない時は60%以下、近くに火がある時は40%以下、火を3回吹き消すと100%でハント。"
       },
       {
         name: "ガルル",
@@ -514,7 +528,7 @@
         speedRange: [1.36, 1.95],
         special: "通常状態で防護装備(浄化香、十字架、塩)を使われると激昂、激昂中にハントを終えると疲弊、疲弊中に防護装備を使われると通常に戻る",
         traits: [],
-        check: "①激昂時は移動速度1.95m/sと速いが、十字架の有効範囲が**2m縮小**する。<br>②疲弊時は移動速度1.36m/sと非常に遅いが、十字架の有効範囲が**1m拡大**する。"
+        check: "①激昂時は移動速度1.95m/sと速いが、十字架の有効範囲が2m縮小。<br>②疲弊時は移動速度1.36m/sと遅いが、十字架の有効範囲が1m拡大。<br>③【SAN値条件】通常50%以下、激昂時60%以下、疲弊時40%以下でハント開始。"
       },
       {
         name: "コルモス",
@@ -524,7 +538,7 @@
         speedRange: [1.7, 2.21],
         special: "なし",
         traits: ["音・会話に反応", "隠れ場所無効/追跡", "視認加速なし"],
-        check: "①基本速度1.7m/sで、プレイヤーの足音を感知すると最大2.21m/sに加速（視認加速はなし）。<br>②5m以内で足音を出されている場合以外、調査員を視認できない。<br>③障害物越しでもキルが発生するがキル距離が通常の半分。"
+        check: "①基本速度1.7m/sで、プレイヤーの足音を感知すると最大2.21m/sに加速（視認加速はなし）。<br>②5m以内で足音を出されている場合以外、調査員を視認できない。<br>③障害物越しでもキルが発生するがキル距離が通常の半分。<br>④【SAN値条件】同室で走る足音を感知した場合は70%以下でハント開始。"
       },
       {
         name: "御霊",
@@ -534,7 +548,7 @@
         speedRange: [1.7, 2.7],
         special: "必ずD.O.T.S.プロジェクターの証拠を出す（ナイトメア以降の確定証拠）",
         traits: ["視認加速あり", "D.O.T.S.制限・特殊", "確定証拠"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】必ずD.O.T.S.の証拠を出す。<br>③【D.O.T.S.制限】プレイヤーと同じ部屋に調査員があると、D.O.T.S.プロジェクターの光に一切姿を現さない（別室カメラ等の確認が必要）。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】ナイトメア以降もD.O.T.S.が絶対に隠れない。<br>③【D.O.T.S.制限】プレイヤーと同じ部屋に調査員があると、プロジェクターの光に一切姿を現さない。<br>④【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "シェード",
@@ -544,7 +558,7 @@
         speedRange: [1.7, 2.7],
         special: "なし",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②プレイヤーと同じ部屋にいると干渉・超常現象・自然ハントを起こさなくなる。<br>③魔法陣やオルゴール使用時、影の姿で出現することがある。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②プレイヤーと同じ部屋にいると干渉・超常現象・自然ハントを起こさなくなる。<br>③魔法陣やオルゴール使用時、影の姿で出現することがある。<br>④【SAN値条件】正気度35%以下でハント開始。"
       },
       {
         name: "ジン",
@@ -554,7 +568,7 @@
         speedRange: [1.7, 2.5],
         special: "能力使用時同じ部屋のプレイヤー1名の正気度を25%下げ、ブレーカーでEMF2を感知させる",
         traits: ["視認加速なし"],
-        check: "①通常時は1.7m/s。視認時、近くにいるプレイヤーへ向かう時は高速固定（特徴発動中で2.5m/s）。3m以下になるか見失うと1.7m/sに戻る（視認加速なし）。<br>②ブレーカーが落ちていると能力や特徴を出せない。"
+        check: "①通常1.7m/s。視認時、近くのプレイヤーへ向かう時は高速固定（特徴発動中で2.5m/s、視認加速なし）。3m以下になるか見失うと1.7m/sに戻る。<br>②ブレーカーが落ちていると能力や特徴を出せない。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "スピリット",
@@ -564,7 +578,7 @@
         speedRange: [1.7, 2.7],
         special: "浄化香を当てると180秒間ハントをしてこなくなる(通常は90秒間)",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ゴースト部屋で浄化香を焚き、180秒間ハントしなくなれば有力。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ゴースト部屋で浄化香を焚き、180秒間ハントしなくなれば有力。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "セーイ",
@@ -574,7 +588,7 @@
         speedRange: [1.0, 2.75],
         special: "能力発動時にセーイと同じ部屋にプレイヤーがいると老化する",
         traits: ["視認加速なし"],
-        check: "①若い時は2.75m/sと非常に速い。老いると1.0m/sと極端に遅くなり、視認加速を一切しない。<br>②平均正気度74%以下でハント開始、老いると平均正気度14%以下になる。"
+        check: "①若い時は2.75m/sと非常に速い。老いると1.0m/sと極端に遅くなり、視認加速を一切しない。<br>②【SAN値条件】一番若い時は74%以下、10回以上老いると14%以下でハント開始。"
       },
       {
         name: "ダヤン",
@@ -584,7 +598,7 @@
         speedRange: [1.2, 2.25],
         special: "なし",
         traits: ["音・会話に反応", "視認加速なし"],
-        check: "①女性限定。10m以内に誰もいない時は1.7m/s。<br>②10m以内の最も近い人が動いている時は2.25m/sに高速固定、立ち止まっている時は1.2m/sに低速固定（視認加速なし）。"
+        check: "①10m以内に誰もいない時は1.7m/s。<br>②10m以内の最も近い人が動いている時は2.25m/sに高速固定、立ち止まっている時は1.2m/sに低速固定（視認加速なし）。<br>③【SAN値条件】周辺で人が動いている時は65%以下、誰もいない時は50%以下、立ち止まっている時は45%以下でハント開始。"
       },
       {
         name: "ツインズ",
@@ -594,7 +608,7 @@
         speedRange: [1.5, 2.38],
         special: "干渉時に一定確率で本体の干渉範囲とは別のより広い干渉範囲内で干渉を起こす",
         traits: [],
-        check: "①メイン（通常ゴーストの88%）は約1.5m/s、サブ（112%）は約2.38m/sの速度で移動。<br>②1体が2体分の行動をしている。"
+        check: "①メイン（通常ゴーストの88%）は約1.5m/s、サブ（112%）は約2.38m/sの速度で移動。<br>②1体が2体分の行動をしている。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "ディルデガスト",
@@ -604,7 +618,7 @@
         speedRange: [1.7, 3.0],
         special: "なし",
         traits: ["視認加速なし"],
-        check: "①初期速度が3.0m/sと非常に速い。ハント前に動かされた物体数によって移動速度が低下（ハント後か十字架使用後に初期速度にリセット）。<br>②視認加速をしない。"
+        check: "①初期速度3.0m/sと非常に速いが、ハント前に動かされた物体数によって移動速度が低下（ハント後か十字架使用後に初期速度にリセット）。視認加速なし。<br>②【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "デーモン",
@@ -614,7 +628,7 @@
         speedRange: [1.7, 2.7],
         special: "ハント開始正気度を無視してハントを行う",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】十字架の有効範囲が通常より**50%拡大**する（T1:4.5m / T2:6m / T3:7.5m）。<br>③浄化香の無効時間が60秒と短く、最短20秒間隔で連続ハントが来ることがある。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②十字架の有効範囲が通常より50%拡大（T1:4.5m / T2:6m / T3:7.5m）。浄化香無効が60秒と短く最短20秒で連続ハントの可能性。<br>③【SAN値条件】通常70%以下、または能力による特殊ハント（100%）。"
       },
       {
         name: "デオヘン",
@@ -624,7 +638,7 @@
         speedRange: [0.4, 2.7],
         special: "必ずスピリットボックスの証拠を出す（ナイトメア以降の確定証拠）",
         traits: ["隠れ場所無効/追跡", "視認加速なし", "確定証拠"],
-        check: "①遠距離では2.7m/sだが、近づくにつれて減速し2.5m以内では0.4m/sと極めて遅くなる。<br>②【確定証拠】スピリットボックスが絶対に隠れない。"
+        check: "①遠距離2.7m/sだが近づくにつれて減速し2.5m以内では0.4m/sと極めて遅くなる（視認加速なし）。<br>②【確定証拠】スピリットボックスが絶対に隠れない。<br>③【SAN値条件】正気度40%以下でハント開始。"
       },
       {
         name: "化け狐",
@@ -634,7 +648,7 @@
         speedRange: [1.7, 2.7],
         special: "必ず紫外線の証拠を出す（ナイトメア以降の確定証拠）。残っている指紋の時間を半分に短縮",
         traits: ["視認加速あり", "特殊証拠挙動", "確定証拠"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】紫外線が絶対に隠れない。<br>③【特殊証拠挙動】指紋の持続時間が通常の半分(約1.5分)。確率で指が6本等のフェイク指紋。ハント中にモデルが変身する。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】紫外線が絶対に隠れない。<br>③指紋持続時間が通常の半分(約1.5分)。確率で指が6本等のフェイク指紋。ハント中にモデルが変身。<br>④【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "バンシー",
@@ -644,7 +658,7 @@
         speedRange: [1.7, 2.7],
         special: "ターゲットと同じ階にいると66%の確率でターゲットの元に徘徊する",
         traits: ["追跡系"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②女性限定。ターゲット以外のプレイヤーはハントで殺されない。<br>③パラボリックマイクを使用すると、通常の金切り声とは異なる**特殊な金切り声**が聞こえることがある。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【追跡系】女性限定。ターゲットと同じ階にいると一定確率でターゲットの元へ徘徊（追跡）。ターゲット以外のプレイヤーはハントで殺されない。<br>③パラボリックマイクで特殊な金切り声が聞こえることがある。<br>④【SAN値条件】ターゲットの正気度50%以下でハント開始。"
       },
       {
         name: "ハントゥ",
@@ -654,7 +668,7 @@
         speedRange: [1.44, 2.7],
         special: "必ず氷点下の証拠を出す（ナイトメア以降の確定証拠）",
         traits: ["視認加速なし", "確定証拠"],
-        check: "①部屋の温度によって移動速度が変化（0℃以下=2.7m/s、15℃以上=1.44m/s）。視認加速はしない。<br>②【確定証拠】氷点下の温度が絶対に隠れない。ブレーカーオフで白い息を出す。"
+        check: "①部屋の温度によって移動速度が変化（0℃以下=2.7m/s、15℃以上=1.44m/s）。視認加速はしない。<br>②【確定証拠】氷点下の温度が絶対に隠れない。ブレーカーオフで白い息を出す。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "ファントム",
@@ -664,7 +678,7 @@
         speedRange: [1.7, 2.7],
         special: "ランダムにプレイヤーの元へ直接ワープする(移動中はハントをしない)",
         traits: ["追跡系", "視認加速あり", "D.O.T.S.制限・特殊"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②プレイヤーの元へ階をまたいで直接ワープする追跡系ゴースト。<br>③【視線ペナルティ】ファントムを直視すると急速に正気度が下がる。<br>④【D.O.T.S.制限】D.O.T.S.の光に出現している姿をカメラで撮影すると、その場で姿が消える。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【追跡系】ランダムにプレイヤーの元へ直接ワープ（移動中はハントしない）。<br>③直視すると急速に正気度が下がる。D.O.T.S.の光に出現している姿をカメラで撮影するとその場で姿が消える。<br>④【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "ポルターガイスト",
@@ -674,7 +688,7 @@
         speedRange: [1.7, 2.7],
         special: "周辺の物を一斉に投げる・浮かす。近くのプレイヤーは投げられた物1個当たり2%の正気度が減少する",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②物体への干渉が多く、遠くに飛ばす事がある。ハント中は0.5秒毎に100%の確率で物を投げる。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②物体への干渉が多く遠くに飛ばす。ハント中は0.5秒毎に100%の確率で物を投げる。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "マイリング",
@@ -684,7 +698,7 @@
         speedRange: [1.7, 2.7],
         special: "なし",
         traits: ["音・会話に反応", "視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント中、足音と声の聞こえる範囲が非常に狭い（通常20mのところ**12m**）。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント中、足音と声の聞こえる範囲が非常很狭い（通常20mのところ12m）。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "ミミック",
@@ -694,7 +708,7 @@
         speedRange: [1.7, 2.7],
         special: "他のゴーストの特徴を真似する",
         traits: ["特殊証拠挙動", "確定証拠"],
-        check: "①真似している対象ゴーストの移動速度・特性に準拠。<br>②【確定証拠・特殊証拠挙動】証拠数に関わらず、必ずゴーストルームにゴーストオーブを常時追加で発生させる。"
+        check: "①真似している対象ゴーストの移動速度・特性に準拠。<br>②【確定証拠】証拠数に関わらず、必ずゴーストルームにゴーストオーブを常時追加で発生させる。<br>③【SAN値条件】真似しているゴーストのSAN値条件に依存。"
       },
       {
         name: "メアー",
@@ -704,7 +718,7 @@
         speedRange: [1.7, 2.7],
         special: "電気をオンにした瞬間、即オフにする",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②照明関係の干渉が多いが、自ら照明の電源を付けない。照明がオンの部屋で長距離徘徊が可能。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②照明関係の干渉が多いが自ら電気を点けない。照明がオンの部屋で長距離徘徊が可能。<br>③【SAN値条件】照明がオン時は40%以下、オフ時は60%以下でハント開始。"
       },
       {
         name: "モーロイ",
@@ -714,7 +728,7 @@
         speedRange: [1.5, 3.7],
         special: "必ずスピリットボックスの証拠を出す（ナイトメア以降の確定証拠）。呪いをかける",
         traits: ["確定証拠"],
-        check: "①平均正気度が下がるにつれてハント中の移動速度が速くなり（1.5m/sから最大3.7m/sまで激変）。<br>②【確定証拠】スピリットボックスが絶対に隠れない。"
+        check: "①平均正気度が下がるにつれてハント中の移動速度が速くなり（1.5m/sから最大3.7m/sまで激変）。<br>②【確定証拠】スピリットボックスが絶対に隠れない。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "雷獣",
@@ -724,7 +738,7 @@
         speedRange: [1.7, 2.5],
         special: "なし",
         traits: ["視認加速なし"],
-        check: "①通常時は1.7m/s。ハント中に周囲にONの電子機器があると高速固定（特徴発動中で2.5m/s）。<br>②電子機器を誤作動させる距離が15mと長い。"
+        check: "①通常時は1.7m/s。ハント中に周囲にONの電子機器があると高速固定（特徴発動中で2.5m/s、視認加速なし）。電子機器を誤作動させる距離が15mと長い。<br>②【SAN値条件】電気機器が近くにある場合は65%以下、通常時は50%以下でハント開始。"
       },
       {
         name: "レイス",
@@ -734,7 +748,7 @@
         speedRange: [1.7, 2.7],
         special: "ハント以外でプレイヤーの元に直接ワープする(その時にEMF2の反応が出る)",
         traits: ["追跡系", "視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント以外でプレイヤーの元へ直接ワープする追跡系ゴースト（EMF2が出る）。塩を踏まない。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【追跡系】ハント以外でプレイヤーの元へ直接ワープするゴースト（EMF2が出る）。塩を踏まない。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "レヴナント",
@@ -744,7 +758,7 @@
         speedRange: [1.0, 3.0],
         special: "なし",
         traits: ["視認加速なし"],
-        check: "①通常時は1.0m/sと極めて遅いが、プレイヤーを感知すると瞬時に3.0m/sへ急加速する固有能力を持つ（通常の視認加速はなし）。見失うと1.0m/sに戻る。"
+        check: "①通常時は1.0m/sと極めて遅いが、プレイヤーを感知すると瞬時に3.0m/sへ急加速する固有能力（通常の視認加速はなし）。見失うと1.0m/sに戻る。<br>②【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "幽霊 (ユレイ)",
@@ -754,7 +768,7 @@
         speedRange: [1.7, 2.7],
         special: "近くにいる人の正気度を15%減少させ、部屋と関連付けた扉が1枚完全に閉まる",
         traits: ["視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②扉に干渉する時に完全に開けるか完全に閉めるかの行動しか取らない。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②扉に干渉する時に完全に開けるか完全に閉めるかの行動しか取らない。<br>③【SAN値条件】正気度50%以下でハント開始。"
       },
       {
         name: "妖怪",
@@ -764,11 +778,10 @@
         speedRange: [1.7, 2.7],
         special: "ゴーストと同じルームでゲーム内VCや無線を利用するとハント率が80%以下に上昇",
         traits: ["音・会話に反応", "視認加速あり"],
-        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】ハント中、ゴーストから**2.5m以内**にある声や電子機器（無線など）にしか反応しない。"
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント中、ゴーストから2.5m以内にある声や電子機器（無線など）にしか反応しない。<br>③【SAN値条件】声に反応した場合は80%以下、通常時は50%以下でハント開始。"
       }
     ];
 
-    // 各ゴーストごとの確定証拠マッピング
     const certainEvidenceMap = {
       "デオヘン": "スピリットボックス",
       "モーロイ": "スピリットボックス",
@@ -795,6 +808,11 @@
 
     function toggleHelp() {
       document.getElementById('help-panel').classList.toggle('open');
+    }
+
+    function openDetails(id) {
+      const el = document.getElementById(id);
+      if (el) el.open = true;
     }
 
     function toggleTools() {
@@ -999,7 +1017,6 @@
           
           let label = ev;
           if (isCertain) {
-            // 選択時（緑）の文字色と被らないよう、オレンジ系カラーと太字で目立たせる
             label += ` <span style="font-size: 0.7rem; color: var(--warning-color); font-weight: bold; margin-left: 3px;">[確定]</span>`;
           }
           return `<span class="${cls}" onclick="clickEvidenceTag('${ev}')">${label}</span>`;
