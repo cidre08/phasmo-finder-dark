@@ -376,14 +376,147 @@
   <!-- ヘルプパネル -->
   <div class="help-panel" id="help-panel">
     <div class="help-header">
-      <h2 style="font-size: 1rem; color: var(--text-main);">使い方ガイド</h2>
+      <h2 style="font-size: 1rem; color: var(--text-main);">📖 使い方ガイド＆役立ち情報</h2>
       <button type="button" onclick="toggleHelp()">閉じる</button>
     </div>
+    
     <div class="help-content">
-      <p>・<b>証拠ボタン</b>：1回クリックで「一致（緑）」、2回クリックで「除外（赤・取消線）」になります。</p>
-      <p>・<b>ゴースト名</b>：クリックすると候補から除外（半透明化）できます。</p>
-      <p>・<b>足音測定</b>：ゴーストの足音リズムに合わせて「👟 タップ計測」ボタンを複数回押すと、対応する速度のゴースト候補が表示されます。</p>
-      <p>・<b>スマッジタイマー</b>：浄化香を焚いた瞬間にスタートし、ハント抑制時間や盲目時間を測ることができます。</p>
+      <div class="jump-links">
+        <a href="#blood-moon-section" class="jump-btn">🔴 ブラッドムーン</a>
+        <a href="#cursed-maps-section" class="jump-btn">🗺️ 主要マップ別スポット</a>
+      </div>
+
+      <ul>
+        <li><strong>ゴースト名のタップ打ち消し:</strong> 各カードの<strong>ゴースト名</strong>を直接タップすると、名前に打ち消し線が入り<strong>カード全体が薄く</strong>なります。消去法メモに最適！</li>
+        <li><strong>証拠・条件ボタン:</strong> 1回タップ：選択 / 2回タップ：<span style="text-decoration: line-through;">除外</span> / 3回タップ：未選択</li>
+        <li><strong>足音測定器の連動:</strong> 足音をタップ測定すると、その速度に合致するゴースト候補が測定器の下に表示されます。候補名をタップするとそのゴーストを検索できます！</li>
+      </ul>
+
+      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
+
+      <div id="blood-moon-section">
+        <h3>🔴 血月（ブラッドムーン）環境変化</h3>
+        <ul>
+          <li>ハント開始ラインが全ゴースト一律 <strong>+10%</strong> 上昇</li>
+          <li>ゴーストの移動速度が <strong>+15% (1.15倍)</strong> ブースト</li>
+          <li>暗所での正気度減少速度が <strong>+100%（2倍）</strong> に加速</li>
+        </ul>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
+
+      <div id="cursed-maps-section">
+        <h3>🗺️ 全マップ別：呪いアイテムの定番スポット</h3>
+        <p style="font-size:0.75rem; color:var(--text-sub); margin: 0 0 6px 0;">※アイテムはランダムですが、よくスポーンする代表的な場所です。</p>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏠 Tanglewood Street House (タングルウッド)</div>
+          <ul>
+            <li><strong>ガレージ:</strong> 車の横の棚や工具箱の上</li>
+            <li><strong>リビング:</strong> テレビ台、ソファの横の小さなテーブル</li>
+            <li><strong>玄関 / 廊下:</strong> 入ってすぐ右のサイドテーブル</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏠 Edgefield Road (エッジフィールド)</div>
+          <ul>
+            <li><strong>玄関ホール:</strong> 入ってすぐ正面の小テーブル</li>
+            <li><strong>キッチン:</strong> カウンターの上や奥のダイニングテーブル</li>
+            <li><strong>廊下・階段下:</strong> 1階の廊下や階段脇のスペース</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏠 Ridgeview Court (リッジビュー)</div>
+          <ul>
+            <li><strong>ガレージ:</strong> 入ってすぐの棚や作業台の上</li>
+            <li><strong>地下室:</strong> 階段を下りた正面のフロア</li>
+            <li><strong>プレイルーム (2階):</strong> 奥の部屋のゲーム機やテーブル付近</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏠 Willow Street (ウィロウ)</div>
+          <ul>
+            <li><strong>ガレージ:</strong> 入口すぐの作業台や棚</li>
+            <li><strong>リビング:</strong> ソファ周辺やテレビ台の横</li>
+            <li><strong>主寝室 / 廊下:</strong> 1階奥の部屋のベッド脇や廊下</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏡 Grafton Farmhouse (グラフトン)</div>
+          <ul>
+            <li><strong>リビング:</strong> 1階中央の暖炉・テーブル周辺</li>
+            <li><strong>作業場:</strong> 1階奥の小部屋の棚</li>
+            <li><strong>2階廊下:</strong> 階段を上がってすぐのチェストの上</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏡 Bleasdale Farmhouse (ブリーズデール)</div>
+          <ul>
+            <li><strong>作業場 (1階奥):</strong> ボイラー室の手前の棚</li>
+            <li><strong>リビング / 廊下:</strong> 1階中央の大きなテーブルの上</li>
+            <li><strong>屋根裏への階段周辺:</strong> 2階から屋根裏へ上がる階段のふもと</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">⛺ Camp Woodwind (キャンプ・ウッドウィンド)</div>
+          <ul>
+            <li><strong>受付カウンター:</strong> 入口ゲートを入ってすぐのチケット・売店カウンター上</li>
+            <li><strong>青いテント内:</strong> テントの床や簡易ベッドの上</li>
+            <li><strong>トイレ付近:</strong> トイレ小屋の外側ベンチや周辺</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏕️ Maple Lodge Campsite (メイプルロッジ)</div>
+          <ul>
+            <li><strong>管理棟 (キャビン):</strong> 入口付近のカウンターやテーブルの上</li>
+            <li><strong>休憩エリア:</strong> テントサイト付近のベンチやピクニックテーブル</li>
+            <li><strong>トイレ・シャトールーム:</strong> 建物内の通路や小部屋</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏛️ Point Hope (ポイントホープ)</div>
+          <ul>
+            <li><strong>1階エントランス:</strong> 入口付近の円形テーブルやカウンター</li>
+            <li><strong>中層階の部屋:</strong> 各階の居住スペースの棚やベッドサイド</li>
+            <li><strong>最上階:</strong> 灯台のてっぺんのフロアや機械周辺</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏫 Brownstone High School (ハイスクール)</div>
+          <ul>
+            <li><strong>ロビー / 受付:</strong> 正面玄関を入ってすぐのカウンター</li>
+            <li><strong>職員室:</strong> 1階のデスクや机の上</li>
+            <li><strong>カフェテリア:</strong> 食堂の大きなテーブルの上</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🧱 Prison (プリズン)</div>
+          <ul>
+            <li><strong>面会室 / 受付:</strong> 入口からすぐのカウンターやロビー</li>
+            <li><strong>警備室:</strong> モニターが並ぶ部屋の机の上</li>
+            <li><strong>廊下 / ブロック:</strong> 独房エリアの通路やテーブル</li>
+          </ul>
+        </div>
+
+        <div class="map-spot-box">
+          <div class="map-title">🏥 Sunny Meadows / Restricted (サニーメドウズ)</div>
+          <ul>
+            <li><strong>チャペル (教会エリア):</strong> 中央の祭壇付近やベンチの上</li>
+            <li><strong>中庭周辺:</strong> 回廊のコーナーやテーブル</li>
+            <li><strong>受付・ロビー:</strong> 入口からすぐのカウンター</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 
