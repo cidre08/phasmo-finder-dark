@@ -3,30 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phasmophobia 調査・判別ツール</title>
- 
+  <title>Phasmophobia 調査ツール (完全版)</title>
+  
   <link rel="apple-touch-icon" href="./icon.png">
   <link rel="icon" type="image/png" href="./icon.png">
   
   <style>
     :root {
-      /* 上品で温かみのあるアースカラー・ダークパレット */
-      --bg-color: #1e1b18;        /* 深みのあるダークココア */
-      --card-bg: #292420;         /* 温かみのあるモカブラウン */
-      --card-border: #423a34;     /* やさしいグレージュの枠線 */
-      --text-main: #f5f2eb;       /* 柔らかいアイボリーホワイト */
-      --text-sub: #a39b94;        /* 上品なウォームグレー */
-      
-      /* アクセントカラー：くすんだローズブラウン＆アースカラー */
-      --accent-color: #b87d6b;     /* 上品なくすんだローズ/テラコッタ */
-      --accent-hover: #a36b59;     /* ホバー時の少し深めのローズ */
-      
-      --danger-color: #d16d6a;     /* マイルドなくすんだ赤 */
-      --success-color: #7a9a7e;    /* 落ち着いたセージグリーン */
-      --warning-color: #d4a373;    /* やわらかなキャメル・マスタード */
-      
-      --tag-bg: #36302b;           /* タグ・ボタンのベース背景 */
-      --tag-border: #524840;       /* タグ・ボタンの枠線 */
+      --bg-color: #1e1b18;        
+      --card-bg: #292420;        
+      --card-border: #423a34;    
+      --text-main: #f5f2eb;      
+      --text-sub: #a39b94;       
+      --accent-color: #b87d6b;    
+      --accent-hover: #a36b59;    
+      --danger-color: #d16d6a;    
+      --success-color: #7a9a7e;   
+      --warning-color: #d4a373;   
+      --tag-bg: #36302b;          
+      --tag-border: #524840;      
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,7 +42,7 @@
       border-bottom: 1px solid var(--card-border);
     }
     h1 { 
-      font-size: 1.2rem; 
+      font-size: 1.05rem; 
       font-weight: 600; 
       color: #f5f2eb; 
       letter-spacing: 0.03em;
@@ -72,7 +67,6 @@
     }
     .btn-primary:hover { background: var(--accent-hover); }
 
-    /* 検索バー・リセット */
     .control-row {
       display: flex;
       gap: 8px;
@@ -89,7 +83,6 @@
     }
     .search-box:focus { outline: none; border-color: var(--accent-color); }
 
-    /* フィルターセクション */
     .filter-section {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -138,7 +131,6 @@
       text-decoration: line-through;
     }
 
-    /* ツールエリア（アコーディオン） */
     .tools-container {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -181,7 +173,6 @@
     .timer-display { font-size: 1.25rem; font-weight: bold; margin: 4px 0; color: var(--warning-color); }
     .timer-box.running { border-color: var(--warning-color); }
 
-    /* カードグリッド */
     .results-info {
       font-size: 0.8rem;
       color: var(--text-sub);
@@ -212,16 +203,19 @@
     .card-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 8px;
     }
     .ghost-name {
       font-size: 1rem;
       font-weight: 700;
       color: #fff;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .ghost-name.crossed { text-decoration: line-through; color: var(--text-sub); }
-    .badges { display: flex; gap: 5px; }
+    .badges { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
     .badge {
       font-size: 0.65rem;
       padding: 2px 6px;
@@ -230,8 +224,9 @@
     }
     .badge-hunt { background: #3d3129; color: #e0a370; border: 1px solid #634b3c; }
     .badge-speed { background: #283338; color: #8cb8c9; border: 1px solid #3d5460; }
+    .badge-special { background: #2f2838; color: #b897c9; border: 1px solid #504263; }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
     .tag {
       font-size: 0.7rem;
       padding: 3px 7px;
@@ -254,21 +249,12 @@
     }
     .box-title { font-weight: 600; font-size: 0.7rem; }
     .check-title { color: var(--success-color); }
-    .vs-title { color: var(--warning-color); }
-    .footstep-title { color: #8cb8c9; }
-    .ghost-note {
-      font-size: 0.7rem;
-      color: var(--text-sub);
-      border-top: 1px dashed var(--card-border);
-      padding-top: 6px;
-      margin-top: 2px;
-    }
+    .special-title { color: var(--warning-color); }
 
-    /* ヘルプパネル & 拡張スタイル */
     .help-panel {
       position: fixed;
       top: 0; right: -100%;
-      width: 100%; max-width: 380px; height: 100%;
+      width: 100%; max-width: 440px; height: 100%;
       background: var(--card-bg);
       border-left: 1px solid var(--card-border);
       z-index: 1000;
@@ -281,43 +267,26 @@
     .help-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .help-content { font-size: 0.8rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 10px; }
 
-    /* 追加：ジャンプボタン＆マップ用スタイル */
     .jump-links {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 8px;
+      flex-wrap: wrap;
     }
     .jump-btn {
-      flex: 1;
-      text-align: center;
       background: var(--tag-bg);
       border: 1px solid var(--tag-border);
-      border-radius: 8px;
-      padding: 6px 8px;
-      font-size: 0.75rem;
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 0.7rem;
       color: var(--accent-color);
       text-decoration: none;
       font-weight: 600;
-      transition: background 0.2s ease;
     }
-    .jump-btn:hover {
-      background: #423a34;
-      color: #fff;
-    }
-    .help-content h3 {
-      font-size: 0.85rem;
-      color: var(--text-main);
-      margin-bottom: 4px;
-      margin-top: 4px;
-    }
-    .help-content ul {
-      padding-left: 16px;
-      font-size: 0.75rem;
-      margin-bottom: 4px;
-    }
-    .help-content li {
-      margin-bottom: 4px;
-    }
+    .jump-btn:hover { background: #423a34; color: #fff; }
+    .help-content h3 { font-size: 0.85rem; color: var(--text-main); margin-top: 6px; }
+    .help-content ul { padding-left: 16px; font-size: 0.75rem; margin-bottom: 4px; }
+    .help-content li { margin-bottom: 4px; }
     .map-spot-box {
       background: var(--bg-color);
       border: 1px solid var(--card-border);
@@ -325,12 +294,7 @@
       padding: 8px 10px;
       margin-bottom: 8px;
     }
-    .map-title {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--warning-color);
-      margin-bottom: 4px;
-    }
+    .map-title { font-size: 0.75rem; font-weight: 600; color: var(--warning-color); margin-bottom: 4px; }
 
     .candidate-list {
       display: flex;
@@ -352,39 +316,35 @@
 <body>
 
   <header>
-    <h1>Phasmophobia 調査ツール</h1>
+    <h1>Phasmophobia 調査ツール (完全版)</h1>
     <div class="header-btns">
       <button type="button" onclick="resetAllFilters()">リセット</button>
-      <button type="button" class="btn-primary" onclick="toggleHelp()">使い方</button>
+      <button type="button" class="btn-primary" onclick="toggleHelp()">攻略データ・早見表</button>
     </div>
   </header>
 
-  <!-- 検索バー -->
   <div class="control-row">
-    <input type="text" id="search-input" class="search-box" placeholder="ゴースト名・特徴・検証方法でフリーワード検索..." oninput="handleSearch(this.value)">
+    <input type="text" id="search-input" class="search-box" placeholder="ゴースト名・特殊能力・特徴でフリーワード検索..." oninput="handleSearch(this.value)">
   </div>
 
-  <!-- 便利ツールアコーディオン -->
   <div class="tools-container">
     <div class="tools-header" onclick="toggleTools()">
-      <span>🛠️ 調査便利ツール（スマッジタイマー・足音測定）</span>
+      <span>スマッジタイマー・足音測定</span>
       <span id="tools-arrow">▼</span>
     </div>
     <div class="tools-body" id="tools-content">
       <div class="tool-box-grid">
-        <!-- スマッジタイマー -->
         <div class="mini-tool timer-box" id="smudge-box">
           <div class="mini-tool-title">浄化香（スマッジ）タイマー</div>
           <div class="timer-display" id="smudge-display">0 秒</div>
           <div style="font-size: 0.7rem; color: var(--text-sub); margin-bottom: 6px;" id="smudge-status-text">停止中</div>
           <button type="button" id="smudge-btn" onclick="handleSmudgeTimer()">スタート</button>
         </div>
-        <!-- 足音測定器 -->
         <div class="mini-tool">
           <div class="mini-tool-title">足音スピード測定 (m/s)</div>
           <div class="timer-display" id="bpm-display">-- m/s</div>
           <div style="display: flex; gap: 6px; justify-content: center; margin-bottom: 6px;">
-            <button type="button" class="btn-primary" style="flex: 1;" onclick="handleFootstepTap()">👟 タップ計測</button>
+            <button type="button" class="btn-primary" style="flex: 1;" onclick="handleFootstepTap()">タップ計測</button>
             <button type="button" onclick="resetFootstepTap()">クリア</button>
           </div>
           <div class="candidate-list" id="candidate-ghosts-list">
@@ -395,9 +355,8 @@
     </div>
   </div>
 
-  <!-- フィルターパネル -->
   <div class="filter-section">
-    <div class="filter-group-title">証拠数モード</div>
+    <div class="filter-group-title">難易度・証拠数モード</div>
     <div class="filter-buttons" id="mode-buttons"></div>
 
     <div class="filter-group-title">証拠アイテム（クリックで絞り込み / 除外）</div>
@@ -421,489 +380,409 @@
     <span style="font-size: 0.7rem;">※ゴースト名タップで候補から除外・復帰</span>
   </div>
 
-  <!-- カード一覧表示エリア -->
   <div class="cards-grid" id="cards-container"></div>
 
-  <!-- ヘルプパネル -->
   <div class="help-panel" id="help-panel">
     <div class="help-header">
-      <h2 style="font-size: 1rem; color: var(--text-main); margin: 0;">📖 使い方ガイド＆役立ち情報</h2>
+      <h2 style="font-size: 0.95rem; color: var(--text-main); margin: 0;">攻略データ ＆ SAN値早見表</h2>
       <button type="button" onclick="toggleHelp()">閉じる</button>
     </div>
     
     <div class="help-content">
       <div class="jump-links">
-        <a href="#blood-moon-section" class="jump-btn">🔴 ブラッドムーン</a>
-        <a href="#cursed-maps-section" class="jump-btn">🗺️ 主要マップ別スポット</a>
+        <a href="#nightmare-section" class="jump-btn">確定証拠</a>
+        <a href="#accel-section" class="jump-btn">視認加速仕様</a>
+        <a href="#track-section" class="jump-btn">追跡系</a>
+        <a href="#san-table-section" class="jump-btn">SAN値早見表</a>
+        <a href="#maps-section" class="jump-btn">呪いスポット</a>
       </div>
 
-      <ul>
-        <li><strong>ゴースト名のタップ打ち消し:</strong> 各カードの<strong>ゴースト名</strong>を直接タップすると、名前に打ち消し線が入り<strong>カード全体が薄く</strong>なります。消去法メモに最適！</li>
-        <li><strong>証拠・条件ボタン:</strong> 1回タップ：選択 / 2回タップ：<span style="text-decoration: line-through;">除外</span> / 3回タップ：未選択</li>
-        <li><strong>足音測定器の連動:</strong> 足音をタップ測定すると、その速度に合致するゴースト候補が測定器の下に表示されます。候補名をタップするとそのゴーストを検索できます！</li>
-      </ul>
-
-      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
-
-      <div id="blood-moon-section">
-        <h3>🔴 血月（ブラッドムーン）環境変化</h3>
+      <div id="nightmare-section">
+        <h3>ナイトメア以降証拠を隠さないゴースト（確定証拠）</h3>
         <ul>
-          <li>ハント開始ラインが全ゴースト一律 <strong>+10%</strong> 上昇</li>
-          <li>ゴーストの移動速度が <strong>+15% (1.15倍)</strong> ブースト</li>
-          <li>暗所での正気度減少速度が <strong>+100%（2倍）</strong> に加速</li>
+          <li><strong>スピリットボックス:</strong> デオヘン、モーロイ</li>
+          <li><strong>氷点下の温度:</strong> ハントゥ</li>
+          <li><strong>紫外線:</strong> 化け狐</li>
+          <li><strong>D.O.T.S.プロジェクター:</strong> 御霊</li>
+          <li><strong>ゴーストオーブ:</strong> ミミック（※特性として常時出現）</li>
         </ul>
       </div>
 
-      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;">
-
-      <div id="cursed-maps-section">
-        <h3>🗺️ 全マップ別：呪いアイテムの定番スポット</h3>
-        <p style="font-size:0.75rem; color:var(--text-sub); margin: 0 0 10px 0;">※アイテムはランダムですが、よくスポーンする代表的な場所です。</p>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏠 Tanglewood Street House (タングルウッド)</div>
-          <ul>
-            <li><strong>ガレージ:</strong> 車の横の棚や工具箱の上</li>
-            <li><strong>リビング:</strong> テレビ台、ソファの横の小さなテーブル</li>
-            <li><strong>玄関 / 廊下:</strong> 入ってすぐ右のサイドテーブル</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏠 Edgefield Road (エッジフィールド)</div>
-          <ul>
-            <li><strong>玄関ホール:</strong> 入ってすぐ正面の小テーブル</li>
-            <li><strong>キッチン:</strong> カウンターの上や奥のダイニングテーブル</li>
-            <li><strong>廊下・階段下:</strong> 1階の廊下や階段脇のスペース</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏠 Ridgeview Court (リッジビュー)</div>
-          <ul>
-            <li><strong>ガレージ:</strong> 入ってすぐの棚や作業台の上</li>
-            <li><strong>地下室:</strong> 階段を下りた正面のフロア</li>
-            <li><strong>プレイルーム (2階):</strong> 奥の部屋のゲーム機やテーブル付近</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏠 Willow Street (ウィロウ)</div>
-          <ul>
-            <li><strong>ガレージ:</strong> 入口すぐの作業台や棚</li>
-            <li><strong>リビング:</strong> ソファ周辺やテレビ台の横</li>
-            <li><strong>主寝室 / 廊下:</strong> 1階奥の部屋のベッド脇や廊下</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏡 Grafton Farmhouse (グラフトン)</div>
-          <ul>
-            <li><strong>リビング:</strong> 1階中央の暖炉・テーブル周辺</li>
-            <li><strong>作業場:</strong> 1階奥の小部屋の棚</li>
-            <li><strong>2階廊下:</strong> 階段を上がってすぐのチェストの上</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏡 Bleasdale Farmhouse (ブリーズデール)</div>
-          <ul>
-            <li><strong>作業場 (1階奥):</strong> ボイラー室の手前の棚</li>
-            <li><strong>リビング / 廊下:</strong> 1階中央の大きなテーブルの上</li>
-            <li><strong>屋根裏への階段周辺:</strong> 2階から屋根裏へ上がる階段のふもと</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">⛺ Camp Woodwind (キャンプ・ウッドウィンド)</div>
-          <ul>
-            <li><strong>受付カウンター:</strong> 入口ゲートを入ってすぐのチケット・売店カウンター上</li>
-            <li><strong>青いテント内:</strong> テントの床や簡易ベッドの上</li>
-            <li><strong>トイレ付近:</strong> トイレ小屋の外側ベンチや周辺</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏕️ Maple Lodge Campsite (メイプルロッジ)</div>
-          <ul>
-            <li><strong>管理棟 (キャビン):</strong> 入口付近のカウンターやテーブルの上</li>
-            <li><strong>休憩エリア:</strong> テントサイト付近のベンチやピクニックテーブル</li>
-            <li><strong>トイレ・シャトールーム:</strong> 建物内の通路や小部屋</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏛️ Point Hope (ポイントホープ)</div>
-          <ul>
-            <li><strong>1階エントランス:</strong> 入口付近の円形テーブルやカウンター</li>
-            <li><strong>中層階の部屋:</strong> 各階の居住スペースの棚やベッドサイド</li>
-            <li><strong>最上階:</strong> 灯台のてっぺんのフロアや機械周辺</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏫 Brownstone High School (ハイスクール)</div>
-          <ul>
-            <li><strong>ロビー / 受付:</strong> 正面玄関を入ってすぐのカウンター</li>
-            <li><strong>職員室:</strong> 1階のデスクや机の上</li>
-            <li><strong>カフェテリア:</strong> 食堂の大きなテーブルの上</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🧱 Prison (プリズン)</div>
-          <ul>
-            <li><strong>面会室 / 受付:</strong> 入口からすぐのカウンターやロビー</li>
-            <li><strong>警備室:</strong> モニターが並ぶ部屋の机の上</li>
-            <li><strong>廊下 / ブロック:</strong> 独房エリアの通路やテーブル</li>
-          </ul>
-        </div>
-
-        <div class="map-spot-box">
-          <div class="map-title">🏥 Sunny Meadows / Restricted (サニーメドウズ)</div>
-          <ul>
-            <li><strong>チャペル (教会エリア):</strong> 中央の祭壇付近やベンチの上</li>
-            <li><strong>中庭周辺:</strong> 回廊のコーナーやテーブル</li>
-            <li><strong>受付・ロビー:</strong> 入口からすぐのカウンター</li>
-          </ul>
-        </div>
+      <div id="accel-section">
+        <h3>視認加速をしない / 特殊な加速をするゴースト</h3>
+        <ul>
+          <li><strong>完全に視認加速をしない:</strong> セーイ、ハントゥ、デオヘン、ディルデガスト</li>
+          <li><strong>固有の加速仕様:</strong> レブナント（視認加速はしないが、プレイヤー感知時に即座に3.0m/sへ急加速）</li>
+          <li><strong>条件付きで加速・特殊変化:</strong> 特徴発動中の雷獣、特徴発動中のジン、特徴発動中のダヤン、特徴未発動のコルモス</li>
+        </ul>
       </div>
+
+      <div id="track-section">
+        <h3>追跡系ゴースト（プレイヤーの元へ移動・ワープ）</h3>
+        <ul>
+          <li><strong>バンシー:</strong> ターゲットと同じ階にいる場合、一定確率で元へ徘徊（一部ルームを除き階をまたがない）</li>
+          <li><strong>ファントム:</strong> ランダムにプレイヤーの元へ直接ワープ（移動中はハントしない）</li>
+          <li><strong>レイス:</strong> ハント以外でプレイヤーの元へ直接ワープ（EMF2の反応が発生）</li>
+        </ul>
+      </div>
+
+      <div id="san-table-section">
+        <h3>ハント開始SAN値（正気度）早見表</h3>
+        <ul>
+          <li><strong>100%〜:</strong> 特殊ハントのデーモン、特殊ハントの怨霊</li>
+          <li><strong>80%〜:</strong> 声に反応した妖怪</li>
+          <li><strong>74%〜:</strong> 一番若いセーイ</li>
+          <li><strong>70%〜:</strong> 通常のデーモン、同室で走る足音を感知したコルモス</li>
+          <li><strong>65%〜:</strong> 電気機器が近くにある場合の雷獣、周辺で人が動いている時のダヤン、攻撃的な状態のオバンボ</li>
+          <li><strong>60%〜:</strong> 照明がオフ時のメアー、近くに火がない時の怨霊、激昂中のガルル</li>
+          <li><strong>50%〜:</strong> 鬼、御霊、ジン、スピリット、ツインズ、化け狐、バンシー、ハントゥ、ファントム、ポルターガイスト、マイリング、モーロイ、通常の雷獣、レイス、レヴナント、幽霊、通常の妖怪、周辺に誰もいないダヤン、通常のガルル、アスワング、通常のコルモス、ディルデガスト</li>
+          <li><strong>45%〜:</strong> 周辺で人が立ち止まっている時のダヤン</li>
+          <li><strong>40%〜:</strong> デオヘン、照明がオン時のメアー、近くに火がある時の怨霊、疲弊中のガルル</li>
+          <li><strong>35%〜:</strong> シェード</li>
+          <li><strong>14%〜:</strong> 10回以上老いたセーイ</li>
+          <li><strong>10%〜:</strong> 穏やかな状態のオバンボ</li>
+          <li><strong>その他:</strong> 真似をしたゴースト依存（ミミック）、老化依存（セーイ）</li>
+        </ul>
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--card-border); margin: 6px 0;" id="maps-section">
+      <h3>全マップ別：呪いアイテムの定番スポット</h3>
+      <div class="map-spot-box">
+        <div class="map-title">小型住宅 (Tanglewood / Edgefield / Ridgeview / Willow)</div>
+        <ul><li>リビング、玄関ホール、ガレージ、子供部屋、地下室の各主要テーブル・棚等。</li></ul>
+      </div>
+      <div class="map-spot-box">
+        <div class="map-title">農家・キャンプ / プリズン・高校 / ポイント・ホープ</div>
+        <ul>
+          <li><strong>農家・キャンプ:</strong> メインテーブル、屋根裏、テント内。</li>
+          <li><strong>プリズン・高校:</strong> すべて1階エントランス（ロビー周辺）に密集。</li>
+          <li><strong>ポイント・ホープ:</strong> 各階の専用ルーム（1階〜8階）に点在。</li>
+        </ul>
+      </div>
+
     </div>
   </div>
 
   <script>
     const ghostData = [
       {
-        name: "レイス",
-        evidences: ["EMFレベル5", "スピリットボックス", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "プレイヤーの足元にワープしてEMFを発生させる",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["塩通過・追跡", "視認加速あり"],
-        check: "①塩の近くを歩かせた足跡の形や動きを観察。<br>②プレイヤーの近くに突然ワープしてEMF2/5を出す現象を確認。",
-        note: "塩の上を歩いても足跡が残らない（特殊な仕様）。"
+        name: "アスワング",
+        evidences: ["氷点下の温度", "ゴーストライティング", "D.O.T.S.プロジェクター"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "特殊", volume: "通常音量",
+        speedRange: [1.53, 2.7],
+        special: "なし",
+        traits: ["隠れ場所無効/追跡", "視認加速あり"],
+        check: "①基本速度1.53m/s（通常ゴーストの90%）で移動し、通常ゴーストの約2/3の時間で最大2.7m/sまで視認加速。<br>②公式隠れ場所にいる調査員をキルせずにハントを中断する。<br>③前回のハントで見逃がした調査員の位置へ移動を始める。"
       },
       {
-        name: "スピリット",
-        evidences: ["EMFレベル5", "ゴーストライティング", "スピリットボックス"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "浄化香（スマッジ）によるハント抑制時間が3分と長い",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["浄化香特殊", "視認加速あり"],
-        check: "①ゴースト部屋で浄化香を焚き、ハントが起きない時間を計測（約3分間ハントしなくなれば有力）。<br>②他の証拠を消去していく。",
-        note: "特有の強力な能力を持たないスタンダードなゴースト。"
-      },
-      {
-        name: "ファントム",
-        evidences: ["紫外線", "スピリットボックス", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "写真に撮るとゴーストが消える / 正気度が大きく低下する",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["点滅速度遅い", "視認加速あり"],
-        check: "①ハント中にカメラで写真を撮るとゴーストが消滅し、写真には写らない。<br>②視線が通ると正気度が急速に低下する。",
-        note: "ハント中の点滅周期が他のゴーストより明らかに長く見えにくい。"
-      },
-      {
-        name: "ポルターガイスト",
-        evidences: ["ゴーストライティング", "紫外線", "スピリットボックス"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "複数のアイテムを同時に投げ飛ばす / 正気度を一気に削る",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["物投擲・干渉", "視認加速あり"],
-        check: "①部屋に大量のアイテムを固めて置き、一斉に吹っ飛ばされるのを待つ。<br>②ハント中にアイテムが投げられるとプレイヤーの正気度が減少する。",
-        note: "オブジェクト干渉の頻度と数が異常に高い。"
-      },
-      {
-        name: "バンシー",
-        evidences: ["EMFレベル5", "紫外線", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "特定のターゲットを1人狙い撃ちする / 特殊な遠隔叫び声",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["ターゲット追跡", "方向音痴無効"],
-        check: "①指向性マイクで低確率の特殊な叫び声（うめき声）を聞く。<br>②ハント中にターゲット以外のプレイヤーをすり抜けて進むか確認。",
-        note: "ターゲットが家を出ている（または死亡）とハント条件が変化する。"
-      },
-      {
-        name: "ジン",
-        evidences: ["EMFレベル5", "氷点下の温度", "紫外線"],
-        huntCategory: "60%以上 (高)",
-        hunt: "60%", speed: "早い", volume: "通常音量",
-        speedRange: [1.7, 2.5],
-        unique: "遠距離にいるプレイヤーとの距離が一気に縮まると高速移動",
-        footstep: "【非視認時】通常1.7m/s / 遠隔加速時2.5m/s",
-        traits: ["電能加速", "ブレーカー干渉"],
-        check: "①ブレーカーをつけた状態で、遠くから走ってきたゴーストが急加速するか確認。<br>②ブレーカーを落とすと能力が封じられ加速しなくなる。",
-        note: "ヒューズボックスがオンの時のみ真価を発揮する。"
-      },
-      {
-        name: "メア",
-        evidences: ["ゴーストオーブ", "ゴーストライティング", "スピリットボックス"],
-        huntCategory: "40%以下 (低) / 60%以上 (高)",
-        hunt: "40%(明) / 60%(暗)", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "暗闇を好み、電気をつけた瞬間に即座に消すことがある",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["暗闇強化", "電気操作妨害"],
-        check: "①明るい場所ではハントラインが40%と低いが、真っ暗な部屋だと60%でハントが起きる。<br>②電気をつけるとすぐに消す行動を確認。",
-        note: "電気をつけるインタラクションを絶対に行わない。"
-      },
-      {
-        name: "レヴナント",
-        evidences: ["ゴーストオーブ", "ゴーストライティング", "氷点下の温度"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "早い", volume: "通常音量",
-        speedRange: [1.0, 3.0],
-        unique: "視界に捉えられると超スピードで直進し、見失うと超低速になる",
-        footstep: "【非視認時・迷走】1.0m/s（極めて遅い）<br>【視認時・追跡】3.0m/s（ゲーム内最速級）",
-        traits: ["視認時超加速", "見失うと減速"],
-        check: "①ハント中に隠れ場所から出て姿を見せた瞬間、ものすごい勢いで突っ込んでくるか確認。<br>②ロッカー等に隠れて視界を遮ると足音が遅くなる。",
-        note: "隠れながら足音を聞くだけでも判別しやすい代表格。"
-      },
-      {
-        name: "シェイド",
-        evidences: ["EMFレベル5", "ゴーストライティング", "氷点下の温度"],
-        huntCategory: "40%以下 (低)",
-        hunt: "35%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "正気度が低い状態でもハントを起こしにくいシャイな性質",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["低正気度ハント抑制", "複数人時活動低下"],
-        check: "①プレイヤーの正気度が平均50%未満なのに全くハントが起きない。<br>②ゴーストの近くに複数人いるとイベントや干渉が露骨に減る。",
-        note: "一人で部屋にいる時にしか実体化やイベントを起こしにくい。"
-      },
-      {
-        name: "デーモン",
-        evidences: ["ゴーストライティング", "氷点下の温度", "紫外線"],
-        huntCategory: "60%以上 (高)",
-        hunt: "70%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "高頻度でハントを起こす / 十字架の有効範囲が広い",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["高頻度ハント", "十字架防御範囲増"],
-        check: "①正気度が高い（70%以上）状態でも容赦なくハントが発生する。<br>②アビリティによる連続ハント（クールダウンが非常に短い）を確認。",
-        note: "非常に攻撃的な危険度の高いゴースト。"
-      },
-      {
-        name: "ユレイ",
-        evidences: ["ゴーストオーブ", "氷点下の温度", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "浄化香（スマッジ）を焚くとその部屋から一定時間移動できなくなる",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["浄化香部屋固定", "扉閉め正気度減"],
-        check: "①ゴースト部屋でスマッジを焚いた後、ドアを閉める音や移動の気配がその部屋周辺だけに限定されるか確認。<br>②扉を勢いよく閉めるドア閉めアビリティ。",
-        note: "部屋の出入りを大きく制限される特性を持つ。"
-      },
-      {
-        name: "オニ",
+        name: "鬼",
         evidences: ["EMFレベル5", "氷点下の温度", "D.O.T.S.プロジェクター"],
-        huntCategory: "60%以上 (高)",
-        hunt: "60%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "近くにプレイヤーがいると活動が活発化し、姿を現しやすい",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["物理実体化重視", "イベント時正気度激減"],
-        check: "①イベントや物理干渉（物の投げ飛ばし）の頻度が非常に高く、点滅時の姿が長く見える。<br>②息を吹きかけるような空気のイベント等で正気度が大きく削られる。",
-        note: "隠れている時も点滅の消えている時間が短い特徴がある。"
-      },
-      {
-        name: "御霊（ミトレ）",
-        evidences: ["EMFレベル5", "紫外線", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
+        huntCategory: "50%以下 (標準)",
         hunt: "50%", speed: "通常", volume: "通常音量",
         speedRange: [1.7, 2.7],
-        unique: "D.O.T.S.プロジェクターの中にいる時しか肉眼・ビデオカメラで映らない",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["D.O.T.S.制限", "部屋移動禁止"],
-        check: "①生肉眼や部屋のカメラではD.O.T.S.が見えないが、定点カメラ越しだと移動するシルエットが確認できる。<br>②塩をあまり好まない習性。",
-        note: "プレイヤーが同じ部屋にいるとD.O.T.S.を出さない仕様がある。"
-      },
-      {
-        name: "ハスク",
-        evidences: ["ゴーストオーブ", "スピリットボックス", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "特殊", volume: "通常音量",
-        speedRange: [1.7, 2.5],
-        unique: "プレイヤーの近くにいると湿度や気温が高く感じられ、ハント速度が変化",
-        footstep: "【非視認時】1.7m/s ～ 2.5m/s（環境により変動）",
-        traits: ["温度偽装", "足音変化"],
-        check: "①氷点下の証拠を出しているにもかかわらず、温度計で測ると部屋の温度が上下に揺らぐ。<br>②ハント中の足音のリズムが一定でない。",
-        note: "偽の証拠や温度のフェイクを行う厄介な特性を持つ。"
-      },
-      {
-        name: "ライジュウ",
-        evidences: ["EMFレベル5", "ゴーストオーブ", "D.O.T.S.プロジェクター"],
-        huntCategory: "65% (高・電気同調)",
-        hunt: "65%(電) / 50%(通)", speed: "早い", volume: "通常音量",
-        speedRange: [1.7, 2.5],
-        unique: "周囲に電子機器（ライトやカメラ等）があるとハント速度が急上昇",
-        footstep: "【非視認時】通常1.7m/s / 電子機器接近時2.5m/s",
-        traits: ["電子機器加速", "遠隔干渉"],
-        check: "①ハント中に手持ちの懐中電灯やEMFリーダーを持ったまま近づかれると、足音が明らかに速くなる。<br>②遠くの電子機器に干渉してピリピリ音を鳴らす。",
-        note: "電子機器をオフにして持っていると加速を抑えられる。"
-      },
-      {
-        name: "オバコレ",
-        evidences: ["EMFレベル5", "ゴーストライティング", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
-        speedRange: [1.7, 2.7],
-        unique: "壁をすり抜けて移動することがある / 足音が消える瞬間がある",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["壁すり抜け", "足音消失"],
-        check: "①ハント中に壁を通り抜けてショートカットする動きを目撃する。<br>②足音が突然消えて別の場所から聞こえる現象（テレポーテーション移動）を確認。",
-        note: "プレイヤーの居場所へ直接ワープする能力を持つ。"
-      },
-      {
-        name: "ミミック",
-        evidences: ["ゴーストオーブ", "氷点下の温度", "スピリットボックス", "紫外線"],
-        huntCategory: "変数 (模倣)",
-        hunt: "変数", speed: "変数", volume: "変数",
-        speedRange: [1.7, 2.7],
-        unique: "他のすべてのゴーストの性格や能力をランダムに模倣する",
-        footstep: "【非視認時】模倣しているゴーストの速度に準拠",
-        traits: ["ゴーストオーブ常時偽装", "性格変化"],
-        check: "①証拠が3つ揃っている（またはナイトメア等で2つ以上）のに、なぜか「ゴーストオーブ」が4つ目の隠し証拠として常に出現している。<br>②行動パターンが途中でガラッと変わる。",
-        note: "実質的に4つの証拠を持つように見えるのが最大の目印。"
-      },
-      {
-        name: "モロイ",
-        evidences: ["ゴーストライティング", "氷点下の温度", "スピリットボックス"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "特殊", volume: "通常音量",
-        speedRange: [1.5, 3.7],
-        unique: "プレイヤーに呪いをかけ、正気度が低いほどハント時の足音が爆速になる",
-        footstep: "【非視認時】低正気度時最大3.7m/s（超高速）",
-        traits: ["呪い付与", "正気度依存加速"],
-        check: "①スピリットボックスや方向音痴マイクで呪いを受けると、正気度が低いプレイヤーを追いかける時の足音が異常に速い。<br>②浄化香で一時的にスピードダウンする。",
-        note: "正気度が減っている終盤のステージでは脅威のスピードを誇る。"
-      },
-      {
-        name: "デオ",
-        evidences: ["ゴーストライティング", "スピリットボックス", "D.O.T.S.プロジェクター"],
-        huntCategory: "40%以下 (低)",
-        hunt: "40%", speed: "特殊", volume: "通常音量",
-        speedRange: [0.4, 2.7],
-        unique: "プレイヤーの位置を常に完全に把握しており、近づくと超低速になる",
-        footstep: "【非視認時・遠距離】2.7m/s（猛ダッシュ）<br>【非視認時・近距離】0.4m/s（極限のノロノロ）",
-        traits: ["位置常時把握", "近距離極低速"],
-        check: "①ハント中にどんな隠れ場所に隠れても一直線に目の前まで歩いてくる。<br>②目の前まで来ると信じられないほど遅いスピード（カタツムリ並み）になるため、周りをぐるぐる回って簡単に巻ける。",
-        note: "隠れ場所が一切通用しない代わりに、至近距離での回避が容易。"
-      },
-      {
-        name: "タイタン",
-        evidences: ["ゴーストオーブ", "氷点下の温度", "紫外線"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "特殊", volume: "小さい",
-        speedRange: [1.7, 2.7],
-        unique: "ハント中の足音が極めて小さく聞き取りにくい / 視線が通ると加速",
-        footstep: "【非視認時】1.7m/s（足音が非常に静か・聞き取りづらい）",
-        traits: ["足音静音", "視認加速あり"],
-        check: "①ハント中に近くを歩いているはずなのに足音がほとんど聞こえない。<br>②ドアのきしみ音や物の動く音で接近を察知する。",
-        note: "音を頼りに隠れるのが難しいため、足音以外の環境音に注意が必要。"
-      },
-      {
-        name: "セーイ",
-        evidences: ["ゴーストオーブ", "スピリットボックス", "紫外線"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "特殊", volume: "音量・速度激変",
-        speedRange: [1.0, 2.5],
-        unique: "ゲーム経過時間（または年齢）とともにハント時のスピードが低下する",
-        footstep: "【非視認時】ゲーム開始直後は早い（2.5m/s）が、時間が経つにつれて遅くなる（1.0m/s）",
-        traits: ["老化現象", "時間経過弱体化"],
-        check: "①調査が長引き後半になるほど、ハント中の足音が明らかに遅く弱々しくなる。<br>②序盤の攻撃性と終盤の鈍さを比較する。",
-        note: "長くいるほど無害に近づいていくユニークな性質を持つ。"
-      },
-      {
-        name: "ダヤン",
-        evidences: ["EMFレベル5", "ゴーストオーブ", "スピリットボックス"],
-        huntCategory: "条件変動・特殊",
-        hunt: "65%(動) / 45%(静)", speed: "特殊", volume: "通常音量",
-        speedRange: [1.2, 2.25],
-        unique: "動いている調査員を感知して足音加速",
-        footstep: "【非視認時】調査員移動中2.25m/s / 静止中1.2m/s",
-        traits: ["音・会話に反応"],
-        check: "①ハント中に自分が走り digitalisation すると足音が加速。<br>②その場にピタッと立ち止まると足音が即座に遅いリズムに変われば確定。",
-        note: "移動中の調査員を察知するとハントライン65%上昇。"
-      },
-      {
-        name: "ガルル",
-        evidences: ["EMFレベル5", "紫外線", "スピリットボックス"],
-        huntCategory: "条件変動・特殊",
-        hunt: "60%(激昂) / 40%(疲弊)", speed: "特殊", volume: "通常音量",
-        speedRange: [1.36, 1.95],
-        unique: "激昂時に塩を踏まなくなる特殊状態",
-        footstep: "【非視認時】激昂時1.95m/s / 疲弊時1.36m/s",
-        traits: ["塩を踏まない", "浄化香特殊"],
-        check: "①浄化香等で刺激した直後のハントで足音が加速。<br>②激昂状態中に塩を踏まなくなったら確定。",
-        note: "防護アイテム使用で一定時間激昂状態へ移行。"
+        special: "なし",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/sで移動し、最大2.7m/sまで視認加速。<br>②ハント中に実体化している時間が長く、消えている時間が0.1秒ほど。<br>③霧の姿の超常現象（くそデカ溜息）をしない。"
       },
       {
         name: "オバンボ",
         evidences: ["ゴーストライティング", "紫外線", "D.O.T.S.プロジェクター"],
         huntCategory: "条件変動・特殊",
-        hunt: "65%(攻撃) / 10%(穏やか)", speed: "特殊", volume: "通常音量",
+        hunt: "穏やか10%以下 / 攻撃的65%以下", speed: "特殊", volume: "通常音量",
         speedRange: [1.44, 1.95],
-        unique: "正確に2分周期で攻撃と穏やかモードが切り替わる",
-        footstep: "【非視認時】攻撃モード1.95m/s / 穏やかモード1.44m/s",
-        traits: ["周期モード切替"],
-        check: "①タイマーで計測。<br>②正確に2分間隔で足音スピードとハント頻度が交互に入れ替わったら確定。",
-        note: "穏やかモード時はハントライン10%まで低下。"
+        special: "なし",
+        traits: [],
+        check: "①初期は穏やか。外側扉開錠1分後、以降2分ごとに攻撃的と切り替わる。<br>②ハント中の速度：穏やか時は1.44m/sと遅く、攻撃的時は1.95m/sと速い。<br>③穏やかな状態のほうが干渉・超常現象を多めに行う。"
       },
       {
-        name: "アスワング",
-        evidences: ["ゴーストライティング", "氷点下の温度", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
-        hunt: "50%", speed: "通常", volume: "通常音量",
+        name: "怨霊",
+        evidences: ["スピリットボックス", "ゴーストオーブ", "氷点下の温度"],
+        huntCategory: "60%以下 (炎依存)",
+        hunt: "60% (火なし) / 40% (火あり) / 特殊100%",
+        speed: "通常", volume: "通常音量",
         speedRange: [1.7, 2.7],
-        unique: "一度見逃した隠れ場所へ次回ハント時に直行",
-        footstep: "【非視認時】1.7m/s（標準）<br>【視認時加速】最高2.7m/sまで徐々に加速",
-        traits: ["隠れ場所無効/追跡"],
-        check: "①前回のハントで隠れていた場所をあえて見逃させる。<br>②次回ハント開始直後、その隠れ場所へ一直線に向かってきたら確定。",
-        note: "同じ隠れ場所を2回連続で使うプレイヤーを狙う仕様。"
+        special: "火を3回吹き消すごとに正気度を無視してハントを起こす（ライターも含む）",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】周囲4m以内に火（ロウソクやライター）がある場合、十字架の代わりに火が消えてハントを防ぐ（クールタイムなし）。"
+      },
+      {
+        name: "ガルル",
+        evidences: ["EMFレベル5", "紫外線", "スピリットボックス"],
+        huntCategory: "条件変動・特殊",
+        hunt: "通常50% / 激昂60% / 疲弊40%", speed: "特殊", volume: "通常音量",
+        speedRange: [1.36, 1.95],
+        special: "通常状態で防護装備(浄化香、十字架、塩)を使われると激昂、激昂中にハントを終えると疲弊、疲弊中に防護装備を使われると通常に戻る",
+        traits: [],
+        check: "①激昂時は移動速度1.95m/sと速いが、十字架の有効範囲が**2m縮小**する。<br>②疲弊時は移動速度1.36m/sと非常に遅いが、十字架の有効範囲が**1m拡大**する。"
       },
       {
         name: "コルモス",
         evidences: ["ゴーストオーブ", "スピリットボックス", "紫外線"],
         huntCategory: "条件変動・特殊",
-        hunt: "70%(走) / 50%(通常)", speed: "特殊", volume: "通常音量",
+        hunt: "通常50% / 同室走行感知70%", speed: "特殊", volume: "通常音量",
         speedRange: [1.7, 2.21],
-        unique: "足音感知追跡 / 視覚による視認を行わない",
-        footstep: "【非視認時】足音検知時2.21m/s（音で追跡）",
-        traits: ["音・会話に反応", "隠れ場所無効/追跡"],
-        check: "①同室で走ると即ハント発生。<br>②ハント中、ゴーストの目の前でしゃがんで静かにしていれば完全に素通りしたら確定。",
-        note: "走る足音に非常に敏感に反応する。"
+        special: "なし",
+        traits: ["音・会話に反応", "隠れ場所無効/追跡", "視認加速なし"],
+        check: "①基本速度1.7m/sで、プレイヤーの足音を感知すると最大2.21m/sに加速（視認加速はなし）。<br>②5m以内で足音を出されている場合以外、調査員を視認できない。<br>③障害物越しでもキルが発生するがキル距離が通常の半分。"
+      },
+      {
+        name: "御霊",
+        evidences: ["EMFレベル5", "紫外線", "D.O.T.S.プロジェクター"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "必ずD.O.T.S.プロジェクターの証拠を出す（ナイトメア以降の確定証拠）",
+        traits: ["視認加速あり", "D.O.T.S.制限・特殊", "確定証拠"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】必ずD.O.T.S.の証拠を出す。<br>③【D.O.T.S.制限】プレイヤーと同じ部屋に調査員があると、D.O.T.S.プロジェクターの光に一切姿を現さない（別室カメラ等の確認が必要）。"
+      },
+      {
+        name: "シェード",
+        evidences: ["EMFレベル5", "ゴーストライティング", "氷点下の温度"],
+        huntCategory: "40%以下 (低)",
+        hunt: "35%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "なし",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②プレイヤーと同じ部屋にいると干渉・超常現象・自然ハントを起こさなくなる。<br>③魔法陣やオルゴール使用時、影の姿で出現することがある。"
+      },
+      {
+        name: "ジン",
+        evidences: ["EMFレベル5", "紫外線", "氷点下の温度"],
+        huntCategory: "60%以上 (高)",
+        hunt: "50%", speed: "早い", volume: "通常音量",
+        speedRange: [1.7, 2.5],
+        special: "能力使用時同じ部屋のプレイヤー1名の正気度を25%下げ、ブレーカーでEMF2を感知させる",
+        traits: ["視認加速なし"],
+        check: "①通常時は1.7m/s。視認時、近くにいるプレイヤーへ向かう時は高速固定（特徴発動中で2.5m/s）。3m以下になるか見失うと1.7m/sに戻る（視認加速なし）。<br>②ブレーカーが落ちていると能力や特徴を出せない。"
+      },
+      {
+        name: "スピリット",
+        evidences: ["EMFレベル5", "スピリットボックス", "ゴーストライティング"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "浄化香を当てると180秒間ハントをしてこなくなる(通常は90秒間)",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ゴースト部屋で浄化香を焚き、180秒間ハントしなくなれば有力。"
+      },
+      {
+        name: "セーイ",
+        evidences: ["ゴーストオーブ", "ゴーストライティング", "D.O.T.S.プロジェクター"],
+        huntCategory: "条件変動・特殊",
+        hunt: "若い時74% / 老化後14%以下", speed: "特殊", volume: "通常音量",
+        speedRange: [1.0, 2.75],
+        special: "能力発動時にセーイと同じ部屋にプレイヤーがいると老化する",
+        traits: ["視認加速なし"],
+        check: "①若い時は2.75m/sと非常に速い。老いると1.0m/sと極端に遅くなり、視認加速を一切しない。<br>②平均正気度74%以下でハント開始、老いると平均正気度14%以下になる。"
+      },
+      {
+        name: "ダヤン",
+        evidences: ["EMFレベル5", "ゴーストオーブ", "スピリットボックス"],
+        huntCategory: "条件変動・特殊",
+        hunt: "動いている時65% / 誰もいない50% / 立ち止まり45%", speed: "特殊", volume: "通常音量",
+        speedRange: [1.2, 2.25],
+        special: "なし",
+        traits: ["音・会話に反応", "視認加速なし"],
+        check: "①女性限定。10m以内に誰もいない時は1.7m/s。<br>②10m以内の最も近い人が動いている時は2.25m/sに高速固定、立ち止まっている時は1.2m/sに低速固定（視認加速なし）。"
+      },
+      {
+        name: "ツインズ",
+        evidences: ["EMFレベル5", "スピリットボックス", "氷点下の温度"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "特殊", volume: "通常音量",
+        speedRange: [1.5, 2.38],
+        special: "干渉時に一定確率で本体の干渉範囲とは別のより広い干渉範囲内で干渉を起こす",
+        traits: [],
+        check: "①メイン（通常ゴーストの88%）は約1.5m/s、サブ（112%）は約2.38m/sの速度で移動。<br>②1体が2体分の行動をしている。"
       },
       {
         name: "ディルデガスト",
         evidences: ["EMFレベル5", "ゴーストライティング", "D.O.T.S.プロジェクター"],
-        huntCategory: "50% (標準)",
+        huntCategory: "50%以下 (標準)",
         hunt: "50%", speed: "特殊", volume: "通常音量",
         speedRange: [1.7, 3.0],
-        unique: "動かされた小物の数に応じてハント速度が大幅減速",
-        footstep: "【非視認時】初期状態3.0m/s（超爆速） → 干渉後に大幅減速<br>【視認時加速】なし",
+        special: "なし",
         traits: ["視認加速なし"],
-        check: "①事前に部屋の小物を大量に動かさせておく。<br>②初期状態の3.0m/sから、アイテム干渉を受けた後は目に見えて減速したら確定。",
-        note: "初期状態はゲーム中トップクラスに爆速。"
+        check: "①初期速度が3.0m/sと非常に速い。ハント前に動かされた物体数によって移動速度が低下（ハント後か十字架使用後に初期速度にリセット）。<br>②視認加速をしない。"
+      },
+      {
+        name: "デーモン",
+        evidences: ["紫外線", "ゴーストライティング", "氷点下の温度"],
+        huntCategory: "60%以上 (高)",
+        hunt: "70% (特殊100%)", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "ハント開始正気度を無視してハントを行う",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】十字架の有効範囲が通常より**50%拡大**する（T1:4.5m / T2:6m / T3:7.5m）。<br>③浄化香の無効時間が60秒と短く、最短20秒間隔で連続ハントが来ることがある。"
+      },
+      {
+        name: "デオヘン",
+        evidences: ["スピリットボックス", "ゴーストライティング", "D.O.T.S.プロジェクター"],
+        huntCategory: "40%以下 (低)",
+        hunt: "40%", speed: "特殊", volume: "通常音量",
+        speedRange: [0.4, 2.7],
+        special: "必ずスピリットボックスの証拠を出す（ナイトメア以降の確定証拠）",
+        traits: ["隠れ場所無効/追跡", "視認加速なし", "確定証拠"],
+        check: "①遠距離では2.7m/sだが、近づくにつれて減速し2.5m以内では0.4m/sと極めて遅くなる。<br>②【確定証拠】スピリットボックスが絶対に隠れない。"
+      },
+      {
+        name: "化け狐",
+        evidences: ["EMFレベル5", "紫外線", "ゴーストオーブ"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "必ず紫外線の証拠を出す（ナイトメア以降の確定証拠）。残っている指紋の時間を半分に短縮",
+        traits: ["視認加速あり", "特殊証拠挙動", "確定証拠"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【確定証拠】紫外線が絶対に隠れない。<br>③【特殊証拠挙動】指紋の持続時間が通常の半分(約1.5分)。確率で指が6本等のフェイク指紋。ハント中にモデルが変身する。"
+      },
+      {
+        name: "バンシー",
+        evidences: ["紫外線", "ゴーストオーブ", "D.O.T.S.プロジェクター"],
+        huntCategory: "ターゲットの正気度50%以下",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "ターゲットと同じ階にいると66%の確率でターゲットの元に徘徊する",
+        traits: ["追跡系"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②女性限定。ターゲット以外のプレイヤーはハントで殺されない。<br>③パラボリックマイクを使用すると、通常の金切り声とは異なる**特殊な金切り声**が聞こえることがある。"
+      },
+      {
+        name: "ハントゥ",
+        evidences: ["紫外線", "ゴーストオーブ", "氷点下の温度"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "特殊", volume: "通常音量",
+        speedRange: [1.44, 2.7],
+        special: "必ず氷点下の証拠を出す（ナイトメア以降の確定証拠）",
+        traits: ["視認加速なし", "確定証拠"],
+        check: "①部屋の温度によって移動速度が変化（0℃以下=2.7m/s、15℃以上=1.44m/s）。視認加速はしない。<br>②【確定証拠】氷点下の温度が絶対に隠れない。ブレーカーオフで白い息を出す。"
+      },
+      {
+        name: "ファントム",
+        evidences: ["スピリットボックス", "紫外線", "D.O.T.S.プロジェクター"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "ランダムにプレイヤーの元へ直接ワープする(移動中はハントをしない)",
+        traits: ["追跡系", "視認加速あり", "D.O.T.S.制限・特殊"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②プレイヤーの元へ階をまたいで直接ワープする追跡系ゴースト。<br>③【視線ペナルティ】ファントムを直視すると急速に正気度が下がる。<br>④【D.O.T.S.制限】D.O.T.S.の光に出現している姿をカメラで撮影すると、その場で姿が消える。"
+      },
+      {
+        name: "ポルターガイスト",
+        evidences: ["スピリットボックス", "紫外線", "ゴーストライティング"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "周辺の物を一斉に投げる・浮かす。近くのプレイヤーは投げられた物1個当たり2%の正気度が減少する",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②物体への干渉が多く、遠くに飛ばす事がある。ハント中は0.5秒毎に100%の確率で物を投げる。"
+      },
+      {
+        name: "マイリング",
+        evidences: ["EMFレベル5", "紫外線", "ゴーストライティング"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "小さい",
+        speedRange: [1.7, 2.7],
+        special: "なし",
+        traits: ["音・会話に反応", "視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント中、足音と声の聞こえる範囲が非常に狭い（通常20mのところ**12m**）。"
+      },
+      {
+        name: "ミミック",
+        evidences: ["スピリットボックス", "紫外線", "氷点下の温度"],
+        huntCategory: "真似している対象に依存",
+        hunt: "変数", speed: "変数", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "他のゴーストの特徴を真似する",
+        traits: ["特殊証拠挙動", "確定証拠"],
+        check: "①真似している対象ゴーストの移動速度・特性に準拠。<br>②【確定証拠・特殊証拠挙動】証拠数に関わらず、必ずゴーストルームにゴーストオーブを常時追加で発生させる。"
+      },
+      {
+        name: "メアー",
+        evidences: ["スピリットボックス", "ゴーストオーブ", "ゴーストライティング"],
+        huntCategory: "照明オン40% / オフ60%",
+        hunt: "40%(明) / 60%(暗)", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "電気をオンにした瞬間、即オフにする",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②照明関係の干渉が多いが、自ら照明の電源を付けない。照明がオンの部屋で長距離徘徊が可能。"
+      },
+      {
+        name: "モーロイ",
+        evidences: ["スピリットボックス", "ゴーストライティング", "氷点下の温度"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "特殊", volume: "音量・速度激変",
+        speedRange: [1.5, 3.7],
+        special: "必ずスピリットボックスの証拠を出す（ナイトメア以降の確定証拠）。呪いをかける",
+        traits: ["確定証拠"],
+        check: "①平均正気度が下がるにつれてハント中の移動速度が速くなり（1.5m/sから最大3.7m/sまで激変）。<br>②【確定証拠】スピリットボックスが絶対に隠れない。"
+      },
+      {
+        name: "雷獣",
+        evidences: ["EMFレベル5", "ゴーストオーブ", "D.O.T.S.プロジェクター"],
+        huntCategory: "通常50% / 電子機器あり65%",
+        hunt: "65%(電) / 50%(通)", speed: "早い", volume: "通常音量",
+        speedRange: [1.7, 2.5],
+        special: "なし",
+        traits: ["視認加速なし"],
+        check: "①通常時は1.7m/s。ハント中に周囲にONの電子機器があると高速固定（特徴発動中で2.5m/s）。<br>②電子機器を誤作動させる距離が15mと長い。"
+      },
+      {
+        name: "レイス",
+        evidences: ["EMFレベル5", "スピリットボックス", "D.O.T.S.プロジェクター"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "ハント以外でプレイヤーの元に直接ワープする(その時にEMF2の反応が出る)",
+        traits: ["追跡系", "視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②ハント以外でプレイヤーの元へ直接ワープする追跡系ゴースト（EMF2が出る）。塩を踏まない。"
+      },
+      {
+        name: "レヴナント",
+        evidences: ["ゴーストオーブ", "ゴーストライティング", "氷点下の温度"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "早い", volume: "通常音量",
+        speedRange: [1.0, 3.0],
+        special: "なし",
+        traits: ["視認加速なし"],
+        check: "①通常時は1.0m/sと極めて遅いが、プレイヤーを感知すると瞬時に3.0m/sへ急加速する固有能力を持つ（通常の視認加速はなし）。見失うと1.0m/sに戻る。"
+      },
+      {
+        name: "幽霊 (ユレイ)",
+        evidences: ["ゴーストオーブ", "氷点下の温度", "D.O.T.S.プロジェクター"],
+        huntCategory: "50%以下 (標準)",
+        hunt: "50%", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "近くにいる人の正気度を15%減少させ、部屋と関連付けた扉が1枚完全に閉まる",
+        traits: ["視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②扉に干渉する時に完全に開けるか完全に閉めるかの行動しか取らない。"
+      },
+      {
+        name: "妖怪",
+        evidences: ["スピリットボックス", "ゴーストオーブ", "D.O.T.S.プロジェクター"],
+        huntCategory: "通常50% / 声あり80%",
+        hunt: "80%(声) / 50%(通常)", speed: "通常", volume: "通常音量",
+        speedRange: [1.7, 2.7],
+        special: "ゴーストと同じルームでゲーム内VCや無線を利用するとハント率が80%以下に上昇",
+        traits: ["音・会話に反応", "視認加速あり"],
+        check: "①通常速度1.7m/s、最大2.7m/sまで視認加速。<br>②【特殊仕様】ハント中、ゴーストから**2.5m以内**にある声や電子機器（無線など）にしか反応しない。"
       }
     ];
 
+    // 各ゴーストごとの確定証拠マッピング
+    const certainEvidenceMap = {
+      "デオヘン": "スピリットボックス",
+      "モーロイ": "スピリットボックス",
+      "ハントゥ": "氷点下の温度",
+      "化け狐": "紫外線",
+      "御霊": "D.O.T.S.プロジェクター",
+      "ミミック": "ゴーストオーブ"
+    };
+
     const allEvidences = ["EMFレベル5", "紫外線", "ゴーストオーブ", "ゴーストライティング", "氷点下の温度", "スピリットボックス", "D.O.T.S.プロジェクター"];
-    const allHunts = ["60%以上 (高)", "50% (標準)", "40%以下 (低)", "条件変動・特殊"];
+    const allHunts = ["60%以上 (高)", "50%以下 (標準)", "40%以下 (低)", "条件変動・特殊"];
     const allSpeedsList = ["通常", "早い", "特殊"];
     const allVolumes = ["通常音量", "小さい", "音量・速度激変"];
-    const allTraits = [...new Set(ghostData.flatMap(g => g.traits || []))];
+    const allTraits = ["視認加速あり", "視認加速なし", "追跡系", "隠れ場所無効/追跡", "音・会話に反応", "特殊証拠挙動", "D.O.T.S.制限・特殊", "確定証拠"];
 
     let currentEvidenceMode = 3;
     let selectedEvidences = [], eliminatedEvidences = [];
@@ -997,7 +876,7 @@
       });
 
       if (matched.length === 0) {
-        listContainer.innerHTML = '<span style="color: var(--danger-color); font-size: 0.75rem;">該当するゴーストがいません（再タップ推奨）</span>';
+        listContainer.innerHTML = '<span style="color: var(--danger-color); font-size: 0.75rem;">該当するゴーストがいません</span>';
         return;
       }
 
@@ -1040,7 +919,14 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = `btn-filter ${currentEvidenceMode === num ? 'active-mode' : ''}`;
-        btn.textContent = num === 0 ? '証拠0' : `${num}個`;
+        
+        let label = '';
+        if (num === 3) label = '通常・プロ (3個)';
+        else if (num === 2) label = 'ナイトメア (2個)';
+        else if (num === 1) label = 'インサニティ (1個)';
+        else if (num === 0) label = '証拠ゼロ (0個)';
+        
+        btn.textContent = label;
         btn.onclick = () => { currentEvidenceMode = num; initControls(); filterAndRender(); };
         modeContainer.appendChild(btn);
       });
@@ -1080,13 +966,13 @@
       const matchedGhosts = ghostData.filter(ghost => {
         if (eliminatedGhosts.includes(ghost.name)) return false;
         if (searchQuery) {
-          const targetStr = (ghost.name + ghost.unique + ghost.check + (ghost.vs || '') + (ghost.traits || []).join('')).toLowerCase();
+          const targetStr = (ghost.name + ghost.special + ghost.check + (ghost.traits || []).join('')).toLowerCase();
           if (!targetStr.includes(searchQuery)) return false;
         }
         for (let ev of selectedEvidences) { if (!ghost.evidences.includes(ev)) return false; }
         for (let ev of eliminatedEvidences) { if (ghost.evidences.includes(ev)) return false; }
-        if (selectedHunts.length > 0 && !selectedHunts.includes(ghost.huntCategory)) return false;
-        if (eliminatedHunts.length > 0 && eliminatedHunts.includes(ghost.huntCategory)) return false;
+        if (selectedHunts.length > 0 && !selectedHunts.some(h => ghost.huntCategory.includes(h))) return false;
+        if (eliminatedHunts.length > 0 && eliminatedHunts.some(h => ghost.huntCategory.includes(h))) return false;
         if (selectedSpeeds.length > 0 && !selectedSpeeds.includes(ghost.speed)) return false;
         if (eliminatedSpeeds.length > 0 && eliminatedSpeeds.includes(ghost.speed)) return false;
         if (selectedVolumes.length > 0 && !selectedVolumes.includes(ghost.volume)) return false;
@@ -1102,14 +988,24 @@
         const isFaded = eliminatedGhosts.includes(ghost.name);
         card.className = `card ${isFaded ? 'card-faded' : ''}`;
 
-        let tagsHtml = ghost.evidences.map(ev => {
+        const tagsHtml = ghost.evidences.map(ev => {
           const isMatched = selectedEvidences.includes(ev);
           const isElim = eliminatedEvidences.includes(ev);
+          const isCertain = certainEvidenceMap[ghost.name] === ev;
+          
           let cls = 'tag';
           if (isMatched) cls += ' matched';
           if (isElim) cls += ' tag-eliminated';
-          return `<span class="${cls}" onclick="clickEvidenceTag('${ev}')">${ev}</span>`;
+          
+          let label = ev;
+          if (isCertain) {
+            // 選択時（緑）の文字色と被らないよう、オレンジ系カラーと太字で目立たせる
+            label += ` <span style="font-size: 0.7rem; color: var(--warning-color); font-weight: bold; margin-left: 3px;">[確定]</span>`;
+          }
+          return `<span class="${cls}" onclick="clickEvidenceTag('${ev}')">${label}</span>`;
         }).join('');
+
+        let traitsBadges = (ghost.traits || []).map(t => `<span class="badge badge-special">${t}</span>`).join('');
 
         card.innerHTML = `
           <div class="card-header">
@@ -1117,13 +1013,12 @@
             <div class="badges">
               <span class="badge badge-hunt">⚡ ${ghost.hunt}</span>
               <span class="badge badge-speed">👟 ${ghost.speed}</span>
+              ${traitsBadges}
             </div>
           </div>
           <div class="tags">${tagsHtml}</div>
-          <div class="info-box check-box"><span class="box-title check-title">【判別・検証】</span><br>${ghost.check}</div>
-          ${ghost.vs ? `<div class="info-box vs-box"><span class="box-title vs-title">【比較・違い】</span><br>${ghost.vs}</div>` : ''}
-          <div class="info-box footstep-box"><span class="box-title footstep-title">【足音・速度】</span><br>${ghost.footstep}</div>
-          <div class="ghost-note">💡 ${ghost.unique}</div>
+          <div class="info-box check-box"><span class="box-title check-title">【特徴・判別ポイント】</span><br>${ghost.check}</div>
+          <div class="info-box special-box"><span class="box-title special-title">【特殊能力】</span><br>${ghost.special}</div>
         `;
         container.appendChild(card);
       });
