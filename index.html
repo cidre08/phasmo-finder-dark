@@ -11,11 +11,11 @@
   <style>
     :root {
       /* 上品で温かみのあるアースカラー・ダークパレット */
-      --bg-color: #1e1b18;         /* 深みのあるダークココア */
-      --card-bg: #292420;          /* 温かみのあるモカブラウン */
-      --card-border: #423a34;      /* やさしいグレージュの枠線 */
-      --text-main: #f5f2eb;        /* 柔らかいアイボリーホワイト */
-      --text-sub: #a39b94;         /* 上品なウォームグレー */
+      --bg-color: #1e1b18;        /* 深みのあるダークココア */
+      --card-bg: #292420;         /* 温かみのあるモカブラウン */
+      --card-border: #423a34;     /* やさしいグレージュの枠線 */
+      --text-main: #f5f2eb;       /* 柔らかいアイボリーホワイト */
+      --text-sub: #a39b94;        /* 上品なウォームグレー */
       
       /* アクセントカラー：くすんだローズブラウン＆アースカラー */
       --accent-color: #b87d6b;     /* 上品なくすんだローズ/テラコッタ */
@@ -264,11 +264,11 @@
       margin-top: 2px;
     }
 
-    /* ヘルプパネル */
+    /* ヘルプパネル & 拡張スタイル */
     .help-panel {
       position: fixed;
       top: 0; right: -100%;
-      width: 100%; max-width: 350px; height: 100%;
+      width: 100%; max-width: 380px; height: 100%;
       background: var(--card-bg);
       border-left: 1px solid var(--card-border);
       z-index: 1000;
@@ -280,6 +280,57 @@
     .help-panel.open { right: 0; }
     .help-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .help-content { font-size: 0.8rem; color: var(--text-sub); display: flex; flex-direction: column; gap: 10px; }
+
+    /* 追加：ジャンプボタン＆マップ用スタイル */
+    .jump-links {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .jump-btn {
+      flex: 1;
+      text-align: center;
+      background: var(--tag-bg);
+      border: 1px solid var(--tag-border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 0.75rem;
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+    .jump-btn:hover {
+      background: #423a34;
+      color: #fff;
+    }
+    .help-content h3 {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      margin-top: 4px;
+    }
+    .help-content ul {
+      padding-left: 16px;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+    .help-content li {
+      margin-bottom: 4px;
+    }
+    .map-spot-box {
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin-bottom: 8px;
+    }
+    .map-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--warning-color);
+      margin-bottom: 4px;
+    }
 
     .candidate-list {
       display: flex;
@@ -376,7 +427,7 @@
   <!-- ヘルプパネル -->
   <div class="help-panel" id="help-panel">
     <div class="help-header">
-      <h2 style="font-size: 1rem; color: var(--text-main);">📖 使い方ガイド＆役立ち情報</h2>
+      <h2 style="font-size: 1rem; color: var(--text-main); margin: 0;">📖 使い方ガイド＆役立ち情報</h2>
       <button type="button" onclick="toggleHelp()">閉じる</button>
     </div>
     
@@ -407,7 +458,7 @@
 
       <div id="cursed-maps-section">
         <h3>🗺️ 全マップ別：呪いアイテムの定番スポット</h3>
-        <p style="font-size:0.75rem; color:var(--text-sub); margin: 0 0 6px 0;">※アイテムはランダムですが、よくスポーンする代表的な場所です。</p>
+        <p style="font-size:0.75rem; color:var(--text-sub); margin: 0 0 10px 0;">※アイテムはランダムですが、よくスポーンする代表的な場所です。</p>
 
         <div class="map-spot-box">
           <div class="map-title">🏠 Tanglewood Street House (タングルウッド)</div>
@@ -783,7 +834,7 @@
         unique: "動いている調査員を感知して足音加速",
         footstep: "【非視認時】調査員移動中2.25m/s / 静止中1.2m/s",
         traits: ["音・会話に反応"],
-        check: "①ハント中に自分が走り出すと足音が加速。<br>②その場にピタッと立ち止まると足音が即座に遅いリズムに変われば確定。",
+        check: "①ハント中に自分が走り digitalisation すると足音が加速。<br>②その場にピタッと立ち止まると足音が即座に遅いリズムに変われば確定。",
         note: "移動中の調査員を察知するとハントライン65%上昇。"
       },
       {
