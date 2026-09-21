@@ -40,24 +40,29 @@
       margin-bottom: 14px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--card-border);
+      gap: 8px;
     }
     h1 { 
-      font-size: 1.05rem; 
+      font-size: 1.0rem; 
       font-weight: 600; 
       color: #f5f2eb; 
       letter-spacing: 0.03em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .header-btns { display: flex; gap: 8px; }
+    .header-btns { display: flex; gap: 6px; flex-shrink: 0; }
 
     button {
       background: var(--tag-bg);
       color: var(--text-main);
       border: 1px solid var(--tag-border);
-      padding: 6px 12px;
+      padding: 6px 10px;
       border-radius: 8px;
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
     button:hover { background: #423a34; border-color: var(--text-sub); }
     .btn-primary { 
@@ -66,6 +71,14 @@
       color: #fff;
     }
     .btn-primary:hover { background: var(--accent-hover); }
+
+    /* 「？」ボタン用の微調整クラス */
+    .btn-help-icon {
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 5px 12px;
+      line-height: 1.2;
+    }
 
     .control-row {
       display: flex;
@@ -173,14 +186,36 @@
     .timer-display { font-size: 1.25rem; font-weight: bold; margin: 4px 0; color: var(--warning-color); }
     .timer-box.running { border-color: var(--warning-color); }
 
-    .results-info {
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      margin-bottom: 8px;
+    .results-info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 12px;
+      gap: 8px;
     }
+    .results-left-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .results-count {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .results-note-inline {
+      font-size: 0.7rem;
+      color: var(--text-sub);
+    }
+    /* リセットボタン（？ボタンと統一感のある形状・配色） */
+    .btn-reset-inline {
+      font-size: 0.75rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      line-height: 1.2;
+    }
+
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -285,7 +320,6 @@
     }
     .jump-btn:hover { background: #423a34; color: #fff; }
 
-    /* アコーディオン用スタイル */
     .help-content details {
       background: var(--bg-color);
       border: 1px solid var(--card-border);
@@ -337,10 +371,9 @@
 <body>
 
   <header>
-    <h1>Phasmophobia 調査ツール (完全版)</h1>
+    <h1>Phasmophobia 調査ツール</h1>
     <div class="header-btns">
-      <button type="button" onclick="resetAllFilters()">リセット</button>
-      <button type="button" class="btn-primary" onclick="toggleHelp()">攻略データ・解説</button>
+      <button type="button" class="btn-primary btn-help-icon" onclick="toggleHelp()">?</button>
     </div>
   </header>
 
@@ -396,16 +429,19 @@
     <div class="filter-buttons" id="trait-buttons"></div>
   </div>
 
-  <div class="results-info">
-    <span id="results-count">該当： 0 件</span>
-    <span style="font-size: 0.7rem;">※ゴースト名タップで候補から除外・復帰</span>
+  <div class="results-info-row">
+    <div class="results-left-group">
+      <span id="results-count" class="results-count">該当： 0 件</span>
+      <span class="results-note-inline">※ゴースト名タップで除外・復帰</span>
+    </div>
+    <button type="button" class="btn-primary btn-reset-inline" onclick="resetAllFilters()">リセット</button>
   </div>
 
   <div class="cards-grid" id="cards-container"></div>
 
   <div class="help-panel" id="help-panel">
     <div class="help-header">
-      <h2 style="font-size: 0.95rem; color: var(--text-main); margin: 0;">攻略データ ＆ 解説パネル</h2>
+      <h2 style="font-size: 0.95rem; color: var(--text-main); margin: 0;">解説データ ＆ ガイドパネル</h2>
       <button type="button" onclick="toggleHelp()">閉じる</button>
     </div>
     
@@ -416,7 +452,6 @@
         <a href="#maps-section" class="jump-btn" onclick="openDetails('maps-section')">呪いスポット</a>
       </div>
 
-      <!-- 使い方アコーディオン (初期オープンに変更) -->
       <details id="usage-section" open>
         <summary>ツール・使い方ガイド</summary>
         <ul>
@@ -427,7 +462,6 @@
         </ul>
       </details>
 
-      <!-- ブラッドムーンアコーディオン (通常クローズ) -->
       <details id="bloodmoon-section">
         <summary>ブラッドムーン（イベント詳細情報）</summary>
         <div style="font-size: 0.75rem; display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
@@ -450,7 +484,6 @@
         </div>
       </details>
 
-      <!-- 呪いスポットアコーディオン -->
       <details id="maps-section">
         <summary>全マップ別：呪いアイテムの定番スポット</summary>
         <div class="map-spot-box">
@@ -507,7 +540,7 @@
         speedRange: [1.44, 1.95],
         special: "なし",
         traits: [],
-        check: "①初期は穏やか。外側扉開錠1分後、以降2分ごとに攻撃的と切り替わる。<br>②ハント中の速度：穏やか時は1.44m/sと遅く、攻撃的時は1.95m/sと速い。<br>③穏やかな状態のほうが干渉・超常現象を多めに行う。<br>④【SAN値条件】穏やかな状態は正気度10%以下、攻撃的な状態は正気度65%以下でハント開始。"
+        check: "①初期は穏やか。外側扉開錠1分後、以降2分ごとに攻撃edと切り替わる。<br>②ハント中の速度：穏やか時は1.44m/sと遅く、攻撃的時は1.95m/sと速い。<br>③穏やかな状態のほうが干渉・超常現象を多めに行う。<br>④【SAN値条件】穏やかな状態は正気度10%以下、攻撃的な状態は正気度65%以下でハント開始。"
       },
       {
         name: "怨霊",
